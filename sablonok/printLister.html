@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintLister</title>
+   
+</head>
+<body>
+<style>
+    #list-of-documents-to-print-ul{
+        list-style-type:none;
+    }
+    #print-menu h3{
+        background-color: rgb(102, 238, 147);
+    }
+    #list-of-documents-to-print-ul{
+        border: 1px solid rgb(49, 103, 67);
+        
+        border-radius: 15px;
+        padding:5pt;
+    }
+
+    #list-of-documents-to-print-ul li{
+        background-color: rgb(102, 238, 147);
+        padding: 3pt;
+        border-radius: 15px;
+        margin-bottom: 3pt;
+    }
+
+</style>
+
+    <!-- Nyomtatni valók lista -->
+    <div id="print-menu">
+    <div id="list-of-documents-to-print-container" class="notToPrint">
+        <h3 class="notToPrint">Nyomtatható dokumentumok:</h3>
+    <p class="notToPrint">Pipáld ki azokat a dokumentumokat, amelyeket nyomtatni szeretnél!</p>    
+    <p>Dokumentumok rendezési szempontja: 
+        <select id="dokumentumok-rendezese-select" >
+            <option value="">Válassz...</option>
+            <option value="1">dolgozó neve</option>
+            <option value="2">kezdő időpont</option>
+            <option value="3">dokumentum tipusa</option>
+        </select>
+        
+    </p>    
+    <!--Dokumentum lista kezdete-->
+    <ul id="list-of-documents-to-print-ul">
+<!--Lista elem-->
+        <li class="document-to-print-li">
+                <input type="checkbox" name="to-print-checkbox" class="to-print-checkbox" id="to-print-checkbox-INDEX">
+                Dolgozó_időpont_dokumentum-típus_helyszín
+            </li>
+<!--Lista elem vége-->
+
+<!--Lista elem-->
+<li class="document-to-print-li">
+    <input type="checkbox" name="to-print-checkbox" class="to-print-checkbox" id="to-print-checkbox-INDEX">
+    Dolgozó_időpont_dokumentum-típus_helyszín
+</li>
+<!--Lista elem vége-->
+
+<!--Lista elem-->
+<li class="document-to-print-li">
+    <input type="checkbox" name="to-print-checkbox" class="to-print-checkbox" id="to-print-checkbox-INDEX">
+    Dolgozó_időpont_dokumentum-típus_helyszín
+</li>
+<!--Lista elem vége-->
+
+
+
+        </ul>
+    <!--Dokumentum lista vége-->
+        <h3>Dokumentumok előnézete:</h3>
+    </div>
+    <div id="documents-to-print">
+        
+    </div>
+</div>
+
+</body>
+</html>

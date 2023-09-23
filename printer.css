@@ -1,0 +1,65 @@
+#notToPrint,.notToPrint{
+    display: none !important;
+}
+
+.onlyToPrint{
+    visibility: visible;
+}
+
+.sor.onlyToPrint{
+    display:flex;
+}
+
+.teljesitesIgazolas-sablon{
+    
+    margin: 1.5cm 2cm 1.5cm 2cm;
+}
+
+.teljesitesigazolas-h1{
+    break-before: always;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14pt;
+}
+
+.teljesitesigazolas-h2{
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;  
+}
+
+
+.intezmeny-altal-kitoltendo{
+    width:100%;
+    height: 12%;
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+}
+.intezmeny-altal-kitoltendo td{
+    border: 1px solid black;
+    padding: 2pt;
+}
+.intezmeny-altal-kitoltendo-ures-td{
+    height: 100px;
+}
+.oldal-tores{
+    break-after: page;
+}
+
+@page {
+    
+    margin: 0;
+     /* 
+     álló:
+    size: A4 portrait;
+   fekvő:
+        size: landscape;
+    */
+
+    size: landscape;
+}
+
+.orarend-statisztikak.onlyToPrint{
+    display: block;
+}

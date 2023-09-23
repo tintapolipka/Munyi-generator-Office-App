@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Munyi Form</title>
+    <link rel="stylesheet" href="formazas.css" />
+    <link rel="stylesheet" href="munyiForm.css" />
+  </head>
+  <body>
+    <div id="root">
+<!--Kivételek kérdőív -->
+    <div id="kivetelek-container">
+    <div id="kivetel-lista">
+        <h3>Kivételek:</h3>
+        <p>2023-09-20 : táppénz <button>kivétel törlése</button></p>
+        <p>2023-09-06 : táppénz <button>kivétel törlése</button></p>
+      </div>
+      <form>
+        <h3>kivétel hozzáadása:</h3>
+        <fieldset>
+          <legend>Kivétel típusa:</legend>
+          <p>
+            <input
+              type="radio"
+              name="kivetel-tipusa"
+              id="kivetel-tipusa-tavollet"
+              checked
+            />
+            Távollét
+          </p>
+          <fieldset>
+            <legend>Távollét típusa</legend>
+            <select>
+              <option value="">Válassz egyet!</option>
+              <option value="">szabadság</option>
+              <option value="táppénz">táppénz</option>
+              <option value="tanítás nélküli munkanap">
+                tanítás nélküli munkanap
+              </option>
+              <option value="munkaszüneti nap">munkaszüneti nap</option>
+              <option value="szabadnap">szabadnap</option>
+              <option value="fizetés nélküli szabadság">
+                fizetés nélküli szabadság
+              </option>
+              <option value="szülési szabadság">
+                szülési szabadság (a távollét 31. napjáig)
+              </option>
+              <option value="szakértői nap">szakértői nap</option>
+            </select>
+          </fieldset>
+          <p>
+            <input
+              type="radio"
+              name="kivetel-tipusa"
+              id="kivetel-tipusa-szombat"
+            />
+            Munkanap áthelyezés (szombati munkavégzés)
+          </p>
+
+          <fieldset>
+            <legend>Ledolgozott nap:</legend>
+            <select>
+              <option value="">Válassz egyet!</option>
+              <option value="0">hétfő</option>
+              <option value="1">kedd</option>
+              <option value="2">szerda</option>
+              <option value="3">csütörtök</option>
+              <option value="4">péntek</option>
+            </select>
+          </fieldset>
+        </fieldset>
+        <fieldset>
+          <legend>Kivétel ideje:</legend>
+          <input type="date" id="kivetel-ideje" />
+        </fieldset>
+        <button id="kivetel-hozzaadasa-btn">Hozzáadás</button>
+      </form>
+    </div>
+</div>  
+<!--Kivételek kérdőív vége-->
+  </body>
+</html>
