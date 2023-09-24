@@ -1,10 +1,20 @@
 /*
     teljesitesIgazolás
 */
+/*
 .teljesitesIgazolas-sablon {
   margin: 5% 6.7%;
   width: 80%;
   aspect-ratio: 1.4;
+}
+*/
+.teljesitesIgazolas-sablon{
+  margin: 0;   
+  padding: 1.5cm 2cm 1.5cm 2cm;
+  /*transform: rotate(-90deg);*/
+  width: 205mm;
+  height: 295mm;
+  aspect-ratio: auto;
 }
 
 .teljesitesigazolas-h1 {
@@ -17,6 +27,9 @@
   text-align: center;
   font-family: "Times New Roman", Times, serif;
   font-size: 12pt;
+}
+#teljesitett-datumok p{
+  margin: 10px 0px;
 }
 
 .intezmeny-altal-kitoltendo {

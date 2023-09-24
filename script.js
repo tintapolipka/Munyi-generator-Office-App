@@ -125,7 +125,7 @@ class teljesitesiTemplate {
   </table>
   <br />
   <br />
-  <p class="jobbra-zart oldal-tores">Dátum: ${this.place} ${new Date(
+  <p class="jobbra-zart ">Dátum: ${this.place} ${new Date(
       this.dates[this.dates.length - 1]["date"]
     ).toLocaleString("hu-HU", {
       year: "numeric",
@@ -691,7 +691,7 @@ class OrarendSablon {
   }
 
   get render() {
-    this.node.classList.add("rotate-print");
+    this.node.classList.add("orarend-print");
     this.node.innerHTML = "";
     const orarendStatisztikaval = document.createElement("div");
     orarendStatisztikaval.id = "orarend-het-statisztikaval";
@@ -744,7 +744,7 @@ class OrarendSablon {
     const valtozasMentes = document.createElement("button");
     valtozasMentes.innerText = "Órarend változásainak mentése";
     valtozasMentes.id = "orarend-valtozasainak-mentese";
-    valtozasMentes.classList.add('notToPrint');
+    valtozasMentes.classList.add("notToPrint");
     valtozasMentes.addEventListener("click", (e) => {
       this.teljeshet.putToLocalStorage();
       const hetiOraszamEllenorzo = () => {
@@ -1320,7 +1320,7 @@ class Menu {
     orarendLinkRender: () => {
       const orarendLink = document.createElement("li");
       orarendLink.id = "menu-orarend-link";
-      orarendLink.innerText = "Órarend";
+      orarendLink.innerText = "📅 Órarend";
       orarendLink.addEventListener("click", (e) => {
         if (this.BasicDataForm.allDataAvailable) {
           this.OrarendSablon.active = !this.OrarendSablon.active;
@@ -1334,7 +1334,7 @@ class Menu {
 
     teljesitLinkGenerator: () => {
       const link = document.createElement("li");
-      link.innerText = "Teljesítésigazolás";
+      link.innerText = "📄 Teljesítésigazolás";
 
       link.addEventListener("click", (e) => {
         if (this.BasicDataForm.allDataAvailable) {
@@ -1350,7 +1350,7 @@ class Menu {
 
     munyiLinkGenerator: () => {
       const link = document.createElement("li");
-      link.innerText = "Munyi";
+      link.innerText = "📰 Munyi";
       link.addEventListener("click", () => {
         this.MuNyiTemplate.active = !this.MuNyiTemplate.active;
         this.render;
@@ -1545,7 +1545,7 @@ class DinamikusMunyiSor {
     this.kotelezoOraToCount = this.kotelezoOra;
     return `<div class="munyi-sor-dinamikus ${
       this.kivetelOk == "hetvege" ? "grey-background" : ""
-    } ${this.oldalTores? "oldal-tores" : ''}">
+    } ${this.oldalTores ? "oldal-tores" : ""}">
   <div class="dinamikus-sor-eleje">
     <div class="kis-cellak cella-1">${this.date.getDate()}.</div>
     <div class="kis-cellak cella-2">8:00</div>
@@ -1761,9 +1761,9 @@ class MuNyiTemplate {
             utazas
           )
         );
-            if(this.sortingFunctions.dinamikusMunyiSorList.length>17){
-              this.sortingFunctions.dinamikusMunyiSorList[17].oldalTores = true;
-            }
+        if (this.sortingFunctions.dinamikusMunyiSorList.length > 17) {
+          this.sortingFunctions.dinamikusMunyiSorList[17].oldalTores = true;
+        }
         //következő iterációhoz:
         currentDate = new Date(
           startYear + "-" + (startMonth + 1) + "-" + currentDay
@@ -1806,11 +1806,26 @@ class MuNyiTemplate {
     this.node.id = "munyi-container-nyomtatni";
     const munyiContainer = document.createElement("div");
     munyiContainer.id = "munyi-container";
-    munyiContainer.append(this.statikusFejlec);
 
-    this.sortingFunctions.dinamikusMunyiSorList.forEach((sor) =>
-      munyiContainer.append(sor.render)
-    );
+    const munyi1_18 = document.createElement("div");
+    munyi1_18.append(this.statikusFejlec);
+    munyi1_18.id = "fejlec-plusz-munyi-1-18-sor";
+    munyi1_18.classList.add("border-1pt-solid-black");
+    const munyi19_31 = document.createElement("div");
+    munyi19_31.id = "munyi-19-31-sor";
+    munyi19_31.classList.add("border-1pt-solid-black");
+
+    this.sortingFunctions.dinamikusMunyiSorList.forEach((sor, index) => {
+      if (index < 18) {
+        munyi1_18.append(sor.render);
+      } else {
+        munyi19_31.append(sor.render);
+      }
+    });
+
+    const upperMargin = document.createElement("div");
+    upperMargin.classList.add("upper-margin");
+    munyiContainer.append(munyi1_18, upperMargin, munyi19_31);
 
     this.node.append(munyiContainer);
 
@@ -1828,6 +1843,7 @@ class MuNyiTemplate {
   }
   get statikusLablec() {
     const lablec = document.createElement("div");
+    lablec.classList.add("oldal-tores");
     lablec.innerHTML = `        <div id="kozepes-feher-zaro-sor">
     <div class="kozepes-feher-zaro-sor-cella-1"></div>
     <div
@@ -2043,28 +2059,34 @@ class PrintListItem {
     this.type = type;
     this.location = location;
     this.index = Math.trunc(Math.random() * 10000);
-    this.checkBox = this.checkBoxGenerator();
+ 
+    this.active = true;
+    this.node = this.listItemGenerator();
   }
 
-  checkBoxGenerator() {
-    const checkBoxElement = document.createElement("input");
-    checkBoxElement.type = "checkbox";
-    checkBoxElement.classList.add("to-print-checkbox");
-    checkBoxElement.id = `to-print-checkbox-${this.index}`;
-    return checkBoxElement;
-  }
 
-  get render() {
-    const listItem = document.createElement("li");
-    listItem.classList.add("document-to-print-li");
-    listItem.append(this.checkBox);
+  listItemGenerator(){
+    const listItem = document.createElement('li'); 
+listItem.classList.add("document-to-print-li");
+
     listItem.append(
       ` ${this.name}_${this.date}_${this.type}${
         this.location ? "_" + this.location : ""
       }`
     );
+    listItem.addEventListener('click',(e)=>{
+      console.log(this);
+      this.active = !this.active;
+      this.active? listItem.classList.remove('deAcivated') : listItem.classList.add('deAcivated');
+      this.render;
+    })
 
     return listItem;
+  }
+
+  get render() {
+
+    return this.node;
   }
 
   append() {
@@ -2078,11 +2100,27 @@ class PrintLister {
     this.node = document.createElement("div");
     this.sortBySelect = this.generatorFunctions.sortBySelectGenerator();
     this.dateSelect = this.generatorFunctions.dateSelectGenerator();
+    
     this.allDocumentsToPrint = [];
+    
     this.active = false;
   }
 
-  /////////////////////TODO///////////// Átgondolni az adatok forrását!
+  get allAvailableDocumentList(){
+    
+    this.allDocumentCollector();
+    
+    const unOrderedList = document.createElement("ul");
+    unOrderedList.id = "list-of-documents-to-print-ul";
+    
+    this.allDocumentsToPrint.forEach((docu,index)=>{
+      const listItem = new PrintListItem(docu.name,docu.date,docu.type,docu.location);
+      unOrderedList.append(listItem.render);
+      this.allDocumentsToPrint[index].listItem = listItem;
+    })
+    return unOrderedList;
+  }
+  
   allDocumentCollector() {
     const arrToReturn = [];
     const dataFromLocalStoreage = GlobalFunctions.loadFromLocalStorage(
@@ -2090,27 +2128,45 @@ class PrintLister {
       this.dateSelect.value
     );
     console.log(dataFromLocalStoreage);
-    
+
     //órarend hozzáadása:
-    arrToReturn.push(
-    
-      {name: this.parentObject.BasicDataForm.name, date: this.dateSelect.value, type: 'órarend',
-  object: new OrarendSablon(
-      this.parentObject.BasicDataForm.name,
-      this.dateSelect.value)}
-      );
+    arrToReturn.push({
+      name: this.parentObject.BasicDataForm.name,
+      date: this.dateSelect.value,
+      type: "órarend",
+      object: new OrarendSablon(
+        this.parentObject.BasicDataForm.name,
+        this.dateSelect.value
+      ),
+    });
     //Munyi hozzáadása:
-    arrToReturn.push(
-    {name: this.parentObject.BasicDataForm.name, date: this.dateSelect.value, type: 'órarend',
-  object: new MuNyiTemplate(
-      this.parentObject.BasicDataForm.name,
-      this.dateSelect.value)}
-      );
-    
-    /*arrToReturn.push(new OrarendSablon(
-      this.parentObject.BasicDataForm.name,
-      this.dateSelect.value)
-    );*/
+    arrToReturn.push({
+      name: this.parentObject.BasicDataForm.name,
+      date: this.dateSelect.value,
+      type: "MuNyi",
+      object: new MuNyiTemplate(
+        this.parentObject.BasicDataForm.name,
+        this.dateSelect.value
+      ),
+    });
+
+    this.sortingFunctions.iterateDates();
+    Object.keys(this.sortingFunctions.teljesitesiData).forEach(
+      (hely, index) => {
+        arrToReturn.push({
+          name: this.parentObject.BasicDataForm.name,
+          date: this.dateSelect.value,
+          type: "teljesitesIgazolas",
+          location: hely,
+          object: new teljesitesiTemplate(
+            this.sortingFunctions.teljesitesiData[hely],
+            index,
+            hely
+          ),
+        });
+      }
+    );
+
     this.allDocumentsToPrint = arrToReturn;
   }
 
@@ -2125,17 +2181,33 @@ class PrintLister {
       allDatesArr.forEach((date) => {
         selectElement.innerHTML += `<option value="${date}">${date}</option>`;
       });
-      ////TODO//////////////////////
+      
+      selectElement.addEventListener('change', ()=>{
+        this.allDocumentCollector();
+        this.render;
+      })
       return selectElement;
     },
     sortBySelectGenerator: () => {
       const selectElement = document.createElement("select");
       selectElement.id = "dokumentumok-rendezese-select";
       selectElement.innerHTML = ` <option value="">Válassz...</option>
-    <option value="1">dolgozó neve</option>
-    <option value="2">kezdő időpont</option>
-    <option value="3">dokumentum tipusa</option>`;
-      selectElement.addEventListener("change", () => {
+    <option value="name">dolgozó neve</option>
+    <option value="date">kezdő időpont</option>
+    <option value="type">dokumentum tipusa</option>`;
+    
+    
+    selectElement.addEventListener("change", () => {
+      const sortByNameDateType = (sortBy)=>{
+        this.allDocumentsToPrint.sort((objA,objB)=>{
+          console.log(objA[sortBy],objB[sortBy]);
+          if(objA[sortBy]>objB[sortBy]){
+              return 1;
+          } else return -1;
+      })
+      }  
+  
+      sortByNameDateType(this.sortBySelect.value);
         this.render;
       });
       return selectElement;
@@ -2154,9 +2226,8 @@ class PrintLister {
     selectContainerP.append(this.sortBySelect);
     documentList.append(selectContainerP);
 
-    const unOrderedList = document.createElement("ul");
-    unOrderedList.id = "list-of-documents-to-print-ul";
-    documentList.append(unOrderedList);
+   
+    documentList.append(this.allAvailableDocumentList);
     const elonezetH3 = document.createElement("h3");
     elonezetH3.innerText = "Dokumentumok előnézete:";
     documentList.append(elonezetH3);
@@ -2165,22 +2236,130 @@ class PrintLister {
     return documentList;
   }
 
+  sortingFunctions = {
+    teljesitesiData: {},
+
+    iterateDates: () => {
+      const startDate = new Date(this.dateSelect.value);
+      const startYear = startDate.getFullYear();
+      const startMonth = startDate.getMonth();
+      const startDay = startDate.getDate();
+
+      let currentDate = startDate;
+
+      let currentDay = startDay + 1;
+      while (currentDate.getMonth() == startMonth && currentDay < 32) {
+        //kivételek kezelése
+        const dateString =
+          startYear +
+          "-" +
+          (startMonth + 1 < 10 ? "0" + (startMonth + 1) : startMonth + 1) +
+          "-" +
+          currentDay;
+
+        const kivetel = this.sortingFunctions.kivetelTartalma(dateString);
+
+        if (!kivetel) {
+          this.sortingFunctions.helyszinListazo(
+            dateString,
+            currentDate.getDay()
+          );
+        }
+
+        //következő iterációhoz:
+        currentDate = new Date(
+          startYear + "-" + (startMonth + 1) + "-" + currentDay
+        );
+        currentDay++;
+      }
+
+      /////////TODO///////////////////////////////////////////////////////////////////
+    },
+    kivetelTartalma: (dateString) => {
+      const kivetelLista = GlobalFunctions.loadFromLocalStorage(
+        this.parentObject.BasicDataForm.name,
+        this.dateSelect.value
+      )["Munyi-Generator-kivetelek"];
+      let toReturn = "";
+      kivetelLista.forEach((kivetel) => {
+        if (kivetel[0] == dateString) {
+          // Itt lehet csinálni valamit a találattal
+          console.log("Találtunk egy egyezést:" + kivetel[0]);
+          toReturn = kivetel;
+        }
+      });
+      return toReturn;
+    },
+
+    helyszinListazo: (datum_str, getDay) => {
+      let nap;
+      switch (getDay) {
+        case 1:
+          nap = "hetfo";
+          break;
+
+        case 2:
+          nap = "kedd";
+          break;
+        case 3:
+          nap = "szerda";
+          break;
+        case 4:
+          nap = "csutortok";
+          break;
+        case 5:
+          nap = "pentek";
+          break;
+
+        default:
+          return;
+      }
+
+      const orarendTartalom = JSON.parse(
+        localStorage["Munyi-Generator-heti-foglalkozasok"]
+      );
+
+      const objToReturn = this.sortingFunctions.teljesitesiData;
+
+      orarendTartalom[nap].kotelezoOra.forEach((foglalkozas) => {
+        objToReturn[foglalkozas[1]]
+          ? objToReturn[foglalkozas[1]].push({
+              date: datum_str,
+              hours: foglalkozas[0],
+            })
+          : (objToReturn[foglalkozas[1]] = [
+              { date: datum_str, hours: foglalkozas[0] },
+            ]);
+
+        /* datesArray felépítése:
+    [
+        { date: "2022.10.11", hours: 10 },
+        { date: "2022.10.18", hours: 11 },
+      ]
+    */
+      });
+
+      return objToReturn;
+    },
+  };
+
   get documentPreview() {
     const preview = document.createElement("div");
     preview.id = "documents-to-print";
     preview.classList.add("onlyToPrint");
-    
-      this.allDocumentsToPrint.forEach((document)=>{
-        preview.append( document['object'].render
-        );
-      })
-    
-    document.getElementsByTagName('body')[0].append(preview);
+
+    this.allDocumentsToPrint.forEach((document) => {
+      console.log(document.listItem.active)
+      if(document.listItem.active)
+      {preview.append(document["object"].render);}
+    });
+
+    document.getElementsByTagName("body")[0].append(preview);
   }
 
   get render() {
     this.node.id = "print-menu";
-    this.node.classList.add('notToPrint');
+    this.node.classList.add("notToPrint");
     this.node.innerHTML = "";
 
     const workerSelectP = document.createElement("p");

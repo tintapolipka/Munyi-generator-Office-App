@@ -24,15 +24,19 @@ nav{
     justify-content: space-around;
     list-style-type: none; 
     background-color: lightslategray;
+    padding: 5pt;
+    box-shadow: -1px -1px 3px 1px rgb(53, 24, 78);
+    border-radius: 10px;
 }
 
 #main-menu li{
     font-size: 16pt;
+    padding:2pt;
 }
 
 #main-menu li:hover,#main-menu li:active{
     color:white;
-    text-shadow: 0 0 4px 4px black;
+    text-shadow: 1px 1px 4px 4px black;
 
 }
 
@@ -55,10 +59,10 @@ nav{
     cursor: not-allowed;
 }
 
-#menu-orarend-link::marker{
-    color: white;
-    font-size: xx-large;
+.deAcivated{
+    opacity: .3;
 }
+
 
 #teljesitesi-igazolasok h3{
     background-color: rgb(175, 150, 196);
@@ -113,9 +117,7 @@ nav{
     opacity: 1;
 }
 
-#list-of-documents-to-print-ul{
-    list-style-type:none;
-}
+
 #print-menu h3{
     background-color: rgb(102, 238, 147);
 }
@@ -128,10 +130,18 @@ nav{
 
 #list-of-documents-to-print-ul li,.document-to-print-li{
     background-color: rgb(102, 238, 147);
-    padding: 3pt;
+    padding: 4pt;
     border-radius: 15px;
     margin-bottom: 3pt;
 }
 .document-to-print-li::marker{
     color:rgba(0,0,0,0);
+}
+
+.border-1pt-solid-black{
+    border: 1pt solid black;
+}
+
+#statikus-fejlec header{
+    filter: blur(5px);
 }

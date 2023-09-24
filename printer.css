@@ -11,12 +11,16 @@
 }
 
 .teljesitesIgazolas-sablon{
-    
-    margin: 1.5cm 2cm 1.5cm 2cm;
-}
+    margin: 0;   
+    padding: 1.5cm 2cm 1.5cm 2cm;
+    transform: rotate(-90deg);
+    width: 205mm;
+    height: 292mm;
+    aspect-ratio: auto;
+  }
 
 .teljesitesigazolas-h1{
-    break-before: always;
+    
     text-align: center;
     font-family: 'Times New Roman', Times, serif;
     font-size: 14pt;
@@ -48,7 +52,6 @@
 }
 
 @page {
-    
     margin: 0;
      /* 
      álló:
@@ -62,4 +65,14 @@
 
 .orarend-statisztikak.onlyToPrint{
     display: block;
+}
+.upper-margin{
+    height: 1.5cm;
+    border: none;
+}
+
+.orarend-print{
+    height: 210mm;
+    width: 297mm;
+    padding: 1.5cm 2cm 1.5cm 2cm;
 }
