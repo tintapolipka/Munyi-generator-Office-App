@@ -316,7 +316,9 @@ class OrarendNap {
   }
 
   szabadOraListFromLocalStorage() {
-    return JSON.parse(localStorage["Munyi-Generator-heti-foglalkozasok"])[
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+    
+    return GlobalFunctions.loadFromLocalStorage(basicData['name'],basicData['date'])["Munyi-Generator-heti-foglalkozasok"][
       this.nap
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -325,7 +327,9 @@ class OrarendNap {
   }
 
   munkabaJarasFromLocalStorage() {
-    return JSON.parse(localStorage["Munyi-Generator-heti-foglalkozasok"])[
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+
+    return GlobalFunctions.loadFromLocalStorage(basicData['name'],basicData['date'])["Munyi-Generator-heti-foglalkozasok"][
       this.nap
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -618,26 +622,28 @@ class OrarendHet {
       pentek: napAdatToStore(this.pentek),
     };
 
-    localStorage.setItem(
-      "Munyi-Generator-heti-foglalkozasok",
-      JSON.stringify(allDays)
-    );
+    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
+    GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date,"Munyi-Generator-heti-foglalkozasok",allDays);
   }
 
   loadFromLocaleStorage() {
-    if (!localStorage["Munyi-Generator-heti-foglalkozasok"]) {
-      localStorage.setItem(
-        "Munyi-Generator-heti-foglalkozasok",
-        JSON.stringify({
+    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
+    const localStorageData = GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date); 
+  
+    if (!localStorageData["Munyi-Generator-heti-foglalkozasok"]) {
+      
+        const emptyWeek =
+        {
           hetfo: { kotelezoOra: [], szabadOra: {} },
           kedd: { kotelezoOra: [], szabadOra: {} },
           szerda: { kotelezoOra: [], szabadOra: {} },
           csutortok: { kotelezoOra: [], szabadOra: {} },
           pentek: { kotelezoOra: [], szabadOra: {} },
-        })
-      );
-    }
-    return JSON.parse(localStorage["Munyi-Generator-heti-foglalkozasok"]);
+        }
+        GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date, "Munyi-Generator-heti-foglalkozasok",emptyWeek);
+      }
+    
+    return GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date)["Munyi-Generator-heti-foglalkozasok"];
   }
 
   get render() {
@@ -815,6 +821,13 @@ class BasicDataForm {
         date: this.date,
       })
     );
+    GlobalFunctions.saveToLocalStorage(this.name,this.date,"Munyi-Generator-alapAdatok",
+    {
+      name: this.name,
+      munkakor: this.munkakor,
+      date: this.date,
+    }
+    );
   }
 
   confirmBtnRender() {
@@ -985,6 +998,11 @@ class MunyiDataForm {
   }
 
   saveToLocalStorage() {
+    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
+    const munyiKivetelArr = this.allMunyiKivetel.map((exception) => {
+      return [exception.date, exception.indok, exception.tipus];
+    })
+    GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date,"Munyi-Generator-kivetelek",munyiKivetelArr);
     localStorage.setItem(
       "Munyi-Generator-kivetelek",
       JSON.stringify(
@@ -996,7 +1014,12 @@ class MunyiDataForm {
   }
 
   getFromLocalStorage() {
-    return JSON.parse(localStorage["Munyi-Generator-kivetelek"]);
+    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
+    const allData = GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date);
+    if(!allData["Munyi-Generator-kivetelek"]){
+      GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date,"Munyi-Generator-kivetelek",[]);
+    }
+    return GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date)["Munyi-Generator-kivetelek"];
   }
 
   hetnapjai = ["hétfő", "kedd", "szerda", "csütörök", "péntek"];
@@ -2100,10 +2123,22 @@ class PrintLister {
     this.node = document.createElement("div");
     this.sortBySelect = this.generatorFunctions.sortBySelectGenerator();
     this.dateSelect = this.generatorFunctions.dateSelectGenerator();
-    
+    this.printBtn = this.printBtnGenerator();
+
     this.allDocumentsToPrint = [];
     
     this.active = false;
+  }
+
+  printBtnGenerator(){
+    const printBtn = document.createElement("button");
+  printBtn.innerHTML = "Nyomtatás<br/>🖨️";
+  printBtn.addEventListener('click', ()=>{
+    this.documentPreview();
+    console.log('Pótkerék')
+    window.print();
+  })
+  return printBtn;
   }
 
   get allAvailableDocumentList(){
@@ -2228,9 +2263,8 @@ class PrintLister {
 
    
     documentList.append(this.allAvailableDocumentList);
-    const elonezetH3 = document.createElement("h3");
-    elonezetH3.innerText = "Dokumentumok előnézete:";
-    documentList.append(elonezetH3);
+   
+    documentList.append(this.printBtn);
 
     //documentList.append(this.documentPreview);
     return documentList;
@@ -2343,7 +2377,7 @@ class PrintLister {
     },
   };
 
-  get documentPreview() {
+  documentPreview() {
     const preview = document.createElement("div");
     preview.id = "documents-to-print";
     preview.classList.add("onlyToPrint");
