@@ -1,4 +1,102 @@
 ///////TELJESITESI SELECTOR/////////////////
+class BelsoTeljesitesi {
+  constructor(datesArray, index){
+    this.active = false;
+
+    this.index = index;
+    this.name = JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["name"];
+    this.job = JSON.parse(localStorage["Munyi-Generator-alapAdatok"])[
+      "munkakor"
+    ];
+    this.dates = datesArray;
+    /* datesArray felépítése:
+    [
+        { date: "2022.10.11", hours: 10 },
+        { date: "2022.10.18", hours: 11 },
+      ]
+    */
+
+    this.date = typeof(datesArray[0].date) == 'object'? date: new Date(datesArray[0].date);
+    this.node = document.createElement('div');
+  }  
+
+  get template(){
+    const templateNode = document.createElement('div');
+    templateNode.innerHTML = '';
+
+    templateNode.id="teljesitesIgazolas-1";
+    templateNode.classList.add('teljesitesIgazolas-sablon');
+    templateNode.innerHTML = `<h1 class="teljesitesigazolas-h1">Teljesítésigazolás</h1>
+    <p>${this.name}, ${this.job} ${this.date.getFullYear()}. ${this.date.toLocaleString('hu-HU',{month:'long'})} hónapban,<br/>
+    <span class="undrin-bold">CSCSVPSZ Makói Tagintézményében megvalósuló óráihoz: </span></p>`;
+    
+    templateNode.append(document.createElement('br'));
+
+    const teljesitettDatumok= document.createElement('div');
+    teljesitettDatumok.id="teljesitett-datumok";
+    teljesitettDatumok.innerHTML = this.everyWeek();
+    templateNode.append(teljesitettDatumok);
+    
+    templateNode.append(document.createElement('br'));
+
+    const keltezes = document.createElement('p');
+    keltezes.innerText = `Dátum: Makó, ${new Date(this.dates[this.dates.length-1].date).toLocaleDateString()}`;
+    templateNode.append(keltezes);
+
+    const alairasBlokk = document.createElement('div');
+    alairasBlokk.id="belso-teljesitesi-alairas-container";
+    alairasBlokk.classList.add('kozepre-zart');
+    alairasBlokk.classList.add('oldal-tores');
+    alairasBlokk.innerHTML = `<p >_______________________<br />
+    Koczkás Anikó<br/>
+    igazgató</p>`;
+
+    templateNode.append(alairasBlokk);
+
+    
+    return templateNode;
+  }
+
+  get render(){
+    this.node.append(this.template)
+    return this.node;
+  }
+
+  everyWeek() {
+    let toReturn = "";
+    let lastWeekDay = -1;
+    this.dates.forEach((dateObj, index) => {
+      const currentDate = new Date(dateObj["date"]);
+      const currentDateStr = currentDate.toLocaleDateString('hu-HU');
+      //üres sor hozzáadása ha új hét kezdődött
+      if (currentDate.getDay() <= lastWeekDay && this.dates.length > 5) {
+        toReturn += "<br/>";
+      }
+      lastWeekDay = currentDate.getDay();
+
+      toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>${dateObj["hours"]} óra`;
+      console.log('EZ ITT: ', dateObj);
+      if(dateObj.string.match(/\d/g)){
+        const hoursInSring = dateObj.string.match(/\d/g).reduce((accu,actu)=>{return accu + +actu},0);
+        console.error(hoursInSring);
+        toReturn += ` (${+dateObj["hours"]-hoursInSring} óra ${dateObj["string"]})`;
+      } else {
+        toReturn += ` (${dateObj["string"]})`;
+      }
+      
+      toReturn +=`</p>`;
+    });
+
+    return toReturn;
+  }
+
+
+
+  append(){
+    document.getElementById('root').append(this.render);
+  }
+}
+
 class TeljesitesiLink {
   constructor(text, index) {
     this.text = text;
@@ -22,7 +120,7 @@ class TeljesitesiLink {
 class TeljesitesSelectMenu {
   constructor(helyszinEsDatumFn) {
     this.rawData = helyszinEsDatumFn;
-
+    this.active = false;
     this.node = document.createElement("ul");
   }
 
@@ -42,16 +140,49 @@ class TeljesitesSelectMenu {
       const title = document.createElement("h3");
       title.innerText = key + ":";
       nodeToReturn.append(title);
+// TODO: Ha a key  CSCSVPSZ, 
+//akkor ugyanabba template-be kell beküldeni (.concat-olni a két array-t) 
+let templateXXX;
+if(key === "CSCSVPSZ"){
+  function dateMerger(array){
+    let prevDate;
+    let arrToReturn =[];
+    for(let i=0;i<array.length;i++){
+    let currentDate = array[i].date;
+        if(prevDate===currentDate){
+            console.log('Merge it!')
+            const toPush = {date: currentDate, 
+              hours: +arrToReturn[arrToReturn.length-1].hours + +array[i].hours,
+              string:  arrToReturn[arrToReturn.length-1].string+', ' +array[i].hours + ' óra '+  array[i].string,
+            };
+            arrToReturn[arrToReturn.length-1] = toPush;
+        } else {
+            arrToReturn.push(array[i]);
+            console.log()
+        }
+        prevDate = currentDate;
+    }
+    console.warn(arrToReturn);
+    return arrToReturn;
+}
+templateXXX = new BelsoTeljesitesi(dateMerger(currentrawData[key]), index, key);
 
-      const template = new teljesitesiTemplate(currentrawData[key], index, key);
-      nodeToReturn.append(template.render);
-    });
+} else {     
+  templateXXX = new teljesitesiTemplate(currentrawData[key], index, key);
+    }
+    nodeToReturn.append(templateXXX.render);  
+  });
+    
     return nodeToReturn;
   }
 
   get render() {
     this.node.id = "teljesitesi-linkek";
     this.node.innerHTML = "";
+    if (this.linkek.length === 0) {
+      this.node.innerHTML =
+        "<p>Nincs legenerálható teljesítésigazolás. Ennek legvalószínűbb oka, hogy az órarendbe nem vittél fel kötelező órákat.</p>";
+    }
     this.linkek.forEach((link) => {
       this.node.append(link.render);
     });
@@ -66,6 +197,7 @@ class TeljesitesSelectMenu {
 }
 
 // teljesitésIgazolás
+
 class teljesitesiTemplate {
   constructor(datesArray, index, place) {
     this.active = false;
@@ -78,6 +210,7 @@ class teljesitesiTemplate {
     this.place = place?.split(/\d{4}/)[1]
       ? place.split(/\d{4}/)[1].trim().split(" ")[0]
       : "Makó, ";
+    this.belsoTeljesitesi = /CSCSVPSZ/.test(place);
     /* datesArray felépítése:
     [
         { date: "2022.10.11", hours: 10 },
@@ -91,6 +224,10 @@ class teljesitesiTemplate {
 
     this.index = index;
     this.node = document.createElement("div");
+  }
+
+  get printable() {
+    return this.name && this.dates && this.place;
   }
 
   get render() {
@@ -167,20 +304,71 @@ class teljesitesiTemplate {
 
 //////////////////////////Órarend//////////////////////
 class OrarendFoglalkozas {
-  constructor(foglalkozasIdeje, foglalkozasHelye, tulora = false) {
+  constructor(foglalkozasIdeje, foglalkozasHelye, tulora = false, alapfeladat='') {
     this.id = Math.trunc(Math.random() * 10000) + "-foglalkozas";
 
     this.foglalkozasHelye = foglalkozasHelye;
     this.foglalkozasIdeje = foglalkozasIdeje;
     this.foglalkozasTulora = tulora;
+    this.intezmenyiOraLesz = false;
+    this.alapfeladat = alapfeladat;
+
     this.idopontInput = this.createInput(`${this.id}-idopont`, "number");
-    this.helyszinInput = this.createInput(`${this.id}-helyszin`);
+    this.helyszinInput = this.createInput(
+      `${this.id}-helyszin`,
+      "text",
+      "Helyszín"
+    );
+    this.tuloraCheckBox = this.createInput(`${this.id}-tulora`, "checkbox");
+    this.intezmenyiOraCheckBox = this.createInput(
+      `${this.id}-intezmenyiOra`,
+      "checkbox"
+    );
+    this.intezmenyiOraCheckBox.addEventListener("change", () => {
+      this.intezmenyiOraLesz = this.intezmenyiOraCheckBox.checked;
+      this.render;
+    });
+    this.alapfeladatSelect = this.alapfeladatSelectGenerator();
+
     this.container = document.createElement("div");
+  }
+
+  alapfeladatSelectGenerator() {
+    const selectElement = document.createElement("select");
+    selectElement.id = this.id + "-alapfeladat-select";
+    selectElement.classList.add("szabad-ora-select");
+    selectElement.innerHTML = `
+    <option value="">Válassz szakfeladatot...</option>
+    <option value="szakértői bizottsági tevékenység">szakértői bizottsági tevékenység</option>
+    <option value="nevelési tanácsadás">nevelési tanácsadás</option>
+    <option value="logopédiai ellátás">logopédiai ellátás</option>
+    <option value="korai fejlesztés">korai fejlesztés</option>
+    <option value="gyógytestnevelés">gyógytestnevelés</option>
+    <option value="iskolapszichológia koordináció">iskolapszichológia koordináció</option>
+    <option value="tehetség gondozás">tehetség gondozás</option>
+    <option value="konduktív pedagógiai ellátás">konduktív pedagógiai ellátás</option>
+    <option value="pályaválasztási tanácsadás">pályaválasztási tanácsadás</option>
+    <option value="fejlesztő nevelés">fejlesztő nevelés</option>
+    `;
+
+    return selectElement;
   }
 
   dataCollector() {
     if (this.helyszinInput.value) {
       this.foglalkozasHelye = this.helyszinInput.value;
+    } else if (
+      this.intezmenyiOraCheckBox.checked &&
+      this.alapfeladatSelect.value
+    ) {
+      console.warn("Intézményi óra bejelölve.");
+      this.foglalkozasHelye = "CSCSVPSZ";
+      this.alapfeladat = this.alapfeladatSelect.value;
+    } else if (
+      this.intezmenyiOraCheckBox.checked &&
+      !this.alapfeladatSelect.value
+    ) {
+      this.alapfeladatSelect.classList.add("adatHiany");
     } else {
       this.helyszinInput.classList.add("adatHiany");
     }
@@ -189,17 +377,22 @@ class OrarendFoglalkozas {
     } else {
       this.idopontInput.classList.add("adatHiany");
     }
-    this.foglalkozasTulora = this.container.querySelector(
-      "input[type='checkbox']"
-    ).checked;
+    this.foglalkozasTulora = this.tuloraCheckBox.checked;
     this.render;
   }
 
-  createInput = (id, type = "text") => {
+  createInput = (id, type, placeHolder) => {
     let input = document.createElement("input");
     input.setAttribute("type", type);
     input.setAttribute("id", id);
     input.classList.add("notToPrint");
+    if (input.type === "text") {
+      input.placeholder = placeHolder;
+    }
+    if (input.type === "number") {
+      input.min = 1;
+      input.max = 8;
+    }
     return input;
   };
   okButton = () => {
@@ -208,14 +401,6 @@ class OrarendFoglalkozas {
     okButton.classList.add("notToPrint");
     return okButton;
   };
-
-  get template() {
-    return `<div class="orarend-adat idopont-oszlop">
-  <span>${this.foglalkozasIdeje}</span></div>
-  <div class="orarend-adat helyszin-oszlop">
-    <span>${this.foglalkozasHelye}</span>
-  </div>`;
-  }
 
   get idoTemplate() {
     return `<div class="orarend-adat idopont-oszlop">
@@ -236,23 +421,29 @@ class OrarendFoglalkozas {
       idopontOszlop.classList = "orarend-adat idopont-oszlop";
       idopontOszlop.innerText = "Óraszám: ";
       idopontOszlop.append(this.idopontInput);
+      idopontOszlop.append(document.createElement("br"));
+      idopontOszlop.append("túlóra-e?", this.tuloraCheckBox);
+
       this.container.appendChild(idopontOszlop);
     }
 
     const helyszinOszlop = document.createElement("div");
     helyszinOszlop.classList = "orarend-adat helyszin-oszlop";
-    if (this.foglalkozasHelye) {
+    if (this.foglalkozasHelye && !this.alapfeladat) {
       helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye}</span>`;
+    } else if(this.foglalkozasHelye && this.alapfeladat){
+      helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye} - ${this.alapfeladat}</span>`;
     } else {
-      helyszinOszlop.innerText = "Helyszín: ";
+      helyszinOszlop.append(this.intezmenyiOraCheckBox, "benti óra");
+      helyszinOszlop.append(document.createElement("br"));
+      if (this.intezmenyiOraLesz) {
+        helyszinOszlop.append(this.alapfeladatSelect);
+      } else {
+        helyszinOszlop.append(this.helyszinInput);
+      }
+
       const okHely = this.okButton();
       okHely.addEventListener("click", this.dataCollector.bind(this));
-      helyszinOszlop.append(this.helyszinInput);
-      const tulOraCheck = document.createElement("input");
-      tulOraCheck.id = "tulora-checkbox" + this.id;
-      tulOraCheck.type = "checkbox";
-      helyszinOszlop.append("túlóra: ");
-      helyszinOszlop.append(tulOraCheck);
       helyszinOszlop.append(okHely);
     }
     this.container.appendChild(helyszinOszlop);
@@ -274,7 +465,8 @@ class OrarendNap {
       const newNode = new OrarendFoglalkozas(
         foglalkozas[0],
         foglalkozas[1],
-        foglalkozas[2]
+        foglalkozas[2],
+        foglalkozas[3]
       );
       this.foglalkozasCollection[newNode.id] = newNode;
     });
@@ -317,8 +509,11 @@ class OrarendNap {
 
   szabadOraListFromLocalStorage() {
     const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
-    
-    return GlobalFunctions.loadFromLocalStorage(basicData['name'],basicData['date'])["Munyi-Generator-heti-foglalkozasok"][
+
+    return GlobalFunctions.loadFromLocalStorage(
+      basicData["name"],
+      basicData["date"]
+    )["Munyi-Generator-heti-foglalkozasok"][
       this.nap
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -329,7 +524,10 @@ class OrarendNap {
   munkabaJarasFromLocalStorage() {
     const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
 
-    return GlobalFunctions.loadFromLocalStorage(basicData['name'],basicData['date'])["Munyi-Generator-heti-foglalkozasok"][
+    return GlobalFunctions.loadFromLocalStorage(
+      basicData["name"],
+      basicData["date"]
+    )["Munyi-Generator-heti-foglalkozasok"][
       this.nap
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -379,6 +577,7 @@ class OrarendNap {
   createSzabadOraNumberInput() {
     const input = document.createElement("input");
     input.classList = "szabad-ora-szama-input";
+    input.id = "szabad-ora-szama-input-" + Math.trunc(Math.random() * 10000);
     input.type = "number";
     input.min = "1";
     input.max = "8";
@@ -528,7 +727,7 @@ class OrarendNap {
     const addFoglalkozas = document.createElement("div");
     addFoglalkozas.classList = "sor notToPrint";
     const ujOraBtn = document.createElement("button");
-    ujOraBtn.innerText = "Új óra hozzáadása";
+    ujOraBtn.innerText = "Kötelező óra hozzáadása";
     ujOraBtn.addEventListener("click", this.addNeWFoglalkozas.bind(this));
     addFoglalkozas.append(ujOraBtn);
 
@@ -605,8 +804,10 @@ class OrarendHet {
           napiFoglalkozasok[i].foglalkozasIdeje,
           napiFoglalkozasok[i].foglalkozasHelye,
           napiFoglalkozasok[i].foglalkozasTulora,
+          napiFoglalkozasok[i].alapfeladat
         ]);
       }
+
       return {
         kotelezoOra: arrayToStore,
         szabadOra: napObj.szabadOraList,
@@ -622,28 +823,41 @@ class OrarendHet {
       pentek: napAdatToStore(this.pentek),
     };
 
-    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
-    GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date,"Munyi-Generator-heti-foglalkozasok",allDays);
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+    GlobalFunctions.saveToLocalStorage(
+      basicData.name,
+      basicData.date,
+      "Munyi-Generator-heti-foglalkozasok",
+      allDays
+    );
   }
 
   loadFromLocaleStorage() {
-    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
-    const localStorageData = GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date); 
-  
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+    const localStorageData = GlobalFunctions.loadFromLocalStorage(
+      basicData.name,
+      basicData.date
+    );
+
     if (!localStorageData["Munyi-Generator-heti-foglalkozasok"]) {
-      
-        const emptyWeek =
-        {
-          hetfo: { kotelezoOra: [], szabadOra: {} },
-          kedd: { kotelezoOra: [], szabadOra: {} },
-          szerda: { kotelezoOra: [], szabadOra: {} },
-          csutortok: { kotelezoOra: [], szabadOra: {} },
-          pentek: { kotelezoOra: [], szabadOra: {} },
-        }
-        GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date, "Munyi-Generator-heti-foglalkozasok",emptyWeek);
-      }
-    
-    return GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date)["Munyi-Generator-heti-foglalkozasok"];
+      const emptyWeek = {
+        hetfo: { kotelezoOra: [], szabadOra: {} },
+        kedd: { kotelezoOra: [], szabadOra: {} },
+        szerda: { kotelezoOra: [], szabadOra: {} },
+        csutortok: { kotelezoOra: [], szabadOra: {} },
+        pentek: { kotelezoOra: [], szabadOra: {} },
+      };
+      GlobalFunctions.saveToLocalStorage(
+        basicData.name,
+        basicData.date,
+        "Munyi-Generator-heti-foglalkozasok",
+        emptyWeek
+      );
+    }
+
+    return GlobalFunctions.loadFromLocalStorage(basicData.name, basicData.date)[
+      "Munyi-Generator-heti-foglalkozasok"
+    ];
   }
 
   get render() {
@@ -675,7 +889,22 @@ class OrarendSablon {
   }
 
   get printable() {
-    return this.workerName && this.dateObj != "Invalid Date";
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+    return (
+      this.workerName &&
+      this.dateObj != "Invalid Date" &&
+      Object.keys(
+        GlobalFunctions.loadFromLocalStorage(basicData.name, basicData.date)[
+          "Munyi-Generator-heti-foglalkozasok"
+        ]
+      ).filter((nap) => {
+        return (
+          GlobalFunctions.loadFromLocalStorage(basicData.name, basicData.date)[
+            "Munyi-Generator-heti-foglalkozasok"
+          ][nap].kotelezoOra.length != 0
+        );
+      }).length > 0
+    );
   }
 
   get tanev() {
@@ -821,12 +1050,15 @@ class BasicDataForm {
         date: this.date,
       })
     );
-    GlobalFunctions.saveToLocalStorage(this.name,this.date,"Munyi-Generator-alapAdatok",
-    {
-      name: this.name,
-      munkakor: this.munkakor,
-      date: this.date,
-    }
+    GlobalFunctions.saveToLocalStorage(
+      this.name,
+      this.date,
+      "Munyi-Generator-alapAdatok",
+      {
+        name: this.name,
+        munkakor: this.munkakor,
+        date: this.date,
+      }
     );
   }
 
@@ -857,6 +1089,9 @@ class BasicDataForm {
       );
       if (this.allDataAvailable) {
         this.putToLocalStorage();
+        /////////TODO - A RESETET MEGCSINÁLNI!//// (Addig location.reload())
+        location.reload();
+        /////////TODO - A RESETET MEGCSINÁLNI!//// (Addig location.reload())
       }
 
       this.render;
@@ -968,7 +1203,7 @@ class MunyiKivetel {
 
   get render() {
     if (this.valid) {
-      this.node.innerText = `${this.date}: ${this.indok}`;
+      this.node.innerText = `${this.date}: ${this.indok} `;
 
       this.node.append(this.deleteBtn);
     } else this.node.innerHTML = "";
@@ -992,17 +1227,24 @@ class MunyiDataForm {
     this.tavolletInput = this.inputGenerator("tavollet", "radio", true);
     this.tavolletTipusSelect = this.selectGenetator(this.tavolletOkaListaArr);
 
+    this.intezmenyiOraInput = this.inputGenerator("intezmenyi", "radio", false);
+    this.intezmenyiOraIndex;
     this.munkanapInput = this.inputGenerator("szombat", "radio", false);
     this.munkanapSelect = this.selectGenetator(this.hetnapjai);
     this.idopontInput = this.inputGenerator("datum", "date");
   }
 
   saveToLocalStorage() {
-    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
     const munyiKivetelArr = this.allMunyiKivetel.map((exception) => {
       return [exception.date, exception.indok, exception.tipus];
-    })
-    GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date,"Munyi-Generator-kivetelek",munyiKivetelArr);
+    });
+    GlobalFunctions.saveToLocalStorage(
+      basicData.name,
+      basicData.date,
+      "Munyi-Generator-kivetelek",
+      munyiKivetelArr
+    );
     localStorage.setItem(
       "Munyi-Generator-kivetelek",
       JSON.stringify(
@@ -1014,12 +1256,22 @@ class MunyiDataForm {
   }
 
   getFromLocalStorage() {
-    const basicData = JSON.parse(localStorage['Munyi-Generator-alapAdatok']);
-    const allData = GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date);
-    if(!allData["Munyi-Generator-kivetelek"]){
-      GlobalFunctions.saveToLocalStorage(basicData.name,basicData.date,"Munyi-Generator-kivetelek",[]);
+    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+    const allData = GlobalFunctions.loadFromLocalStorage(
+      basicData.name,
+      basicData.date
+    );
+    if (!allData["Munyi-Generator-kivetelek"]) {
+      GlobalFunctions.saveToLocalStorage(
+        basicData.name,
+        basicData.date,
+        "Munyi-Generator-kivetelek",
+        []
+      );
     }
-    return GlobalFunctions.loadFromLocalStorage(basicData.name,basicData.date)["Munyi-Generator-kivetelek"];
+    return GlobalFunctions.loadFromLocalStorage(basicData.name, basicData.date)[
+      "Munyi-Generator-kivetelek"
+    ];
   }
 
   hetnapjai = ["hétfő", "kedd", "szerda", "csütörök", "péntek"];
@@ -1033,6 +1285,12 @@ class MunyiDataForm {
     "szülési szabadság (a távollét 31. napjáig)",
     "szakértői nap",
   ];
+  get ledolgozhatoOrak() {
+    const dateString = GlobalFunctions.weekDayString(this.idopontInput.value);
+    return GlobalFunctions.loadFromLocalStorage()[
+      "Munyi-Generator-heti-foglalkozasok"
+    ][dateString]["kotelezoOra"].map((ora)=>ora[0]+' óra '+ora[1])
+  }
 
   get kiveteldatuma() {
     return this.idopontInput.value;
@@ -1043,9 +1301,13 @@ class MunyiDataForm {
   }
 
   get kiveteltipusa() {
-    return this.tavolletInput.checked ? "tavollét" : "munkanap áthelyezés";
+    return this.tavolletInput.checked
+      ? "tavollét"
+      : this.intezmenyiOraInput.checked
+      ? "kinti óra ledolgozása"
+      : "munkanap áthelyezés";
   }
-
+  
   get ledolgozottNap() {
     return this.munkanapSelect.value;
   }
@@ -1081,11 +1343,22 @@ class MunyiDataForm {
           ? [datum, indok, tipus]
           : [datum, this.hetnapjai[hetnapja] + "i munkanap pótlása", tipus];
       this.kivetelObjGenerator([toReturn]);
+    } else if(tipus == 'kinti óra ledolgozása'){
+      this.kivetelObjGenerator([[datum, this.intezmenyiOraIndex,tipus]]);
+      console.warn('Intézményi óra ledolgozása');
     } else {
       console.log("Adathiány TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
   }
 
+  get intezmenyiOraSelect(){
+    const selectElement= this.selectGenetator(this.ledolgozhatoOrak);
+    selectElement.addEventListener('change',(e)=>{
+    this.intezmenyiOraIndex = this.ledolgozhatoOrak[e.target.value];
+    })
+    return selectElement;
+  } 
+  
   get hozzaadasBtn() {
     const button = document.createElement("button");
     button.innerText = "Hozzáadás";
@@ -1106,7 +1379,7 @@ class MunyiDataForm {
     input.id = "kivetel-" + text;
     input.checked = checked;
 
-    if (input.type == "radio") {
+    if (input.type == "radio" || input.type == "date") {
       input.addEventListener("change", () => {
         this.render;
       });
@@ -1181,6 +1454,18 @@ class MunyiDataForm {
       kivetelTipusaFieldset.append(tavolletTipusaFieldset);
     }
 
+    const intezmenyiP = document.createElement("p");
+    intezmenyiP.append(this.intezmenyiOraInput);
+    intezmenyiP.append("Kinti óra intézményi ledolgozása");
+    kivetelTipusaFieldset.append(intezmenyiP);
+
+    if (this.kiveteltipusa == "kinti óra ledolgozása") {
+      const kintiOraFieldset = document.createElement("fieldset");
+      kintiOraFieldset.innerHTML = "<legend>Melyik órát dolgoztad le bent?</legend>";
+      kintiOraFieldset.append(this.intezmenyiOraSelect);
+      kivetelTipusaFieldset.append(kintiOraFieldset);
+    }
+
     const munkanapP = document.createElement("p");
     munkanapP.append(this.munkanapInput);
     munkanapP.append("Munkanap áthelyezés (szombati munkavégzés)");
@@ -1193,14 +1478,16 @@ class MunyiDataForm {
       ledolgozottMunkanapFieldset.append(this.munkanapSelect);
       kivetelTipusaFieldset.append(ledolgozottMunkanapFieldset);
     }
+
     const datumFieldset = document.createElement("fieldset");
     datumFieldset.innerHTML = "<legend>Kivétel ideje:</legend>";
     datumFieldset.append(this.idopontInput);
 
-    this.kivetelForm.append(kivetelTipusaFieldset);
     this.kivetelForm.append(datumFieldset);
-    this.kivetelForm.append(this.hozzaadasBtn);
-
+    if (this.idopontInput.value) {
+      this.kivetelForm.append(kivetelTipusaFieldset);
+      this.kivetelForm.append(this.hozzaadasBtn);
+    }
     this.node.append(this.kivetelForm);
 
     return this.node;
@@ -1247,9 +1534,19 @@ class Menu {
     this.TeljesitesSelectMenu = this.teljesitesSelectMenuGenerator();
     this.RenderTeljesiteigazolas = false; //TODO beépíteni a TeljesitesSelectMenu-be!
 
+    this.PrintLister = new PrintLister(this);
+
     this.orarendLink = this.linkGenerators.orarendLinkRender();
     this.teljesitesLink = this.linkGenerators.teljesitLinkGenerator();
     this.munyiLink = this.linkGenerators.munyiLinkGenerator();
+  }
+
+  collapseAll() {
+    Object.keys(this).forEach((key) => {
+      if (this[key].hasOwnProperty("active")) {
+        this[key]["active"] = false;
+      }
+    });
   }
 
   teljesitesiData() {
@@ -1270,11 +1567,9 @@ class Menu {
     adatokBevitele.title = "adatok bevitele";
     adatokBevitele.innerHTML = "<span>📝</span> Adatok bevitele";
     adatokBevitele.addEventListener("click", (e) => {
+      this.collapseAll();
       this.BasicDataForm.active = !this.BasicDataForm.active;
       this.MunyiDataForm.active = !this.MunyiDataForm.active;
-      this.MuNyiTemplate.active = false;
-      this.OrarendSablon.active = false;
-      this.RenderTeljesiteigazolas = false;
       this.render;
     });
     this.mainMenu.append(adatokBevitele);
@@ -1295,8 +1590,16 @@ class Menu {
     const navNyomtatas = document.createElement("li");
     navNyomtatas.id = "nav-nyomtatas";
     navNyomtatas.title = "nyomtatás";
-    navNyomtatas.classList.add("inactive");
+    /*TODO: meghatározni, hogy mikor lehet nyomtatni!*/
+
+    navNyomtatas.classList =
+      this.PrintLister.allDocumentsToPrint.length === 0 ? "inactive" : "";
     navNyomtatas.innerHTML = `<span>🖨️</span>Nyomtatás`;
+    navNyomtatas.addEventListener("click", () => {
+      this.collapseAll();
+      this.PrintLister.active = true;
+      this.render;
+    });
     this.mainMenu.append(navNyomtatas);
 
     return this.mainMenu;
@@ -1305,6 +1608,12 @@ class Menu {
   get render() {
     console.log("Render Menu.");
     this.node.innerHTML = "";
+
+    const bejelentkezve = document.createElement("p");
+    bejelentkezve.innerText = this.BasicDataForm.name
+      ? `bejelentkezve: ${this.BasicDataForm.name}`
+      : "";
+    this.node.append(bejelentkezve);
 
     this.navBar.classList.add("notToPrint");
     this.node.append(this.navBar);
@@ -1333,9 +1642,14 @@ class Menu {
       this.node.append(this.OrarendSablon.render);
     }
 
-    if (this.RenderTeljesiteigazolas) {
+    if (this.TeljesitesSelectMenu.active) {
       this.node.append(this.TeljesitesSelectMenu.render);
     }
+
+    if (this.PrintLister.active) {
+      this.node.append(this.PrintLister.render);
+    }
+
     return this.node;
   }
 
@@ -1344,7 +1658,8 @@ class Menu {
       const orarendLink = document.createElement("li");
       orarendLink.id = "menu-orarend-link";
       orarendLink.innerText = "📅 Órarend";
-      orarendLink.addEventListener("click", (e) => {
+      orarendLink.addEventListener("click", () => {
+        this.collapseAll();
         if (this.BasicDataForm.allDataAvailable) {
           this.OrarendSablon.active = !this.OrarendSablon.active;
           this.render;
@@ -1360,11 +1675,12 @@ class Menu {
       link.innerText = "📄 Teljesítésigazolás";
 
       link.addEventListener("click", (e) => {
+        this.collapseAll();
         if (this.BasicDataForm.allDataAvailable) {
-          this.RenderTeljesiteigazolas = !this.RenderTeljesiteigazolas;
+          this.TeljesitesSelectMenu.active = true;
           this.render;
         } else {
-          this.RenderTeljesiteigazolas = false;
+          this.TeljesitesSelectMenu.active = false;
         }
       });
 
@@ -1375,6 +1691,7 @@ class Menu {
       const link = document.createElement("li");
       link.innerText = "📰 Munyi";
       link.addEventListener("click", () => {
+        this.collapseAll();
         this.MuNyiTemplate.active = !this.MuNyiTemplate.active;
         this.render;
       });
@@ -1393,7 +1710,7 @@ class Menu {
 
       let currentDate = startDate;
 
-      let currentDay = startDay + 1;
+      let currentDay = startDay;
       while (currentDate.getMonth() == startMonth && currentDay < 32) {
         //kivételek kezelése
         const dateString =
@@ -1401,7 +1718,7 @@ class Menu {
           "-" +
           (startMonth + 1 < 10 ? "0" + (startMonth + 1) : startMonth + 1) +
           "-" +
-          currentDay;
+          (currentDay < 10? "0" + currentDay : currentDay);
 
         const kivetel = this.sortingFunctions.kivetelTartalma(dateString);
 
@@ -1410,10 +1727,10 @@ class Menu {
         }
         //szortírozás órarend szerint
         else {
-          console.log("szortírozás órarend szerint");
+          //console.log("szortírozás órarend szerint:", currentDate);
           this.sortingFunctions.helyszinListazo(
             dateString,
-            currentDate.getDay()
+            new Date(dateString).getDay()
           );
         }
 
@@ -1427,14 +1744,13 @@ class Menu {
       /////////TODO///////////////////////////////////////////////////////////////////
     },
     kivetelTartalma: (dateString) => {
-      const kivetelLista = JSON.parse(
-        localStorage["Munyi-Generator-kivetelek"]
-      );
+      
+      const kivetelLista = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
       let toReturn = "";
       kivetelLista.forEach((kivetel) => {
         if (kivetel[0] == dateString) {
           // Itt lehet csinálni valamit a találattal
-          console.log("Találtunk egy egyezést:" + kivetel[0]);
+          console.log("Találtunk egy egyezést: " + kivetel[0]+ ' == ' + dateString);
           toReturn = kivetel;
         }
       });
@@ -1442,6 +1758,7 @@ class Menu {
     },
 
     helyszinListazo: (datum_str, getDay) => {
+      console.log(datum_str);
       let nap;
       switch (getDay) {
         case 1:
@@ -1464,11 +1781,9 @@ class Menu {
         default:
           return;
       }
-
-      const orarendTartalom = JSON.parse(
-        localStorage["Munyi-Generator-heti-foglalkozasok"]
-      );
-
+      console.log(datum_str,nap);
+///TODO: kivenni a kivételArray-ből a hely nevét, és a CSCSVPSZ-hez berakni a sortingFunctions.teljesitesiData-hoz pótlásként és a helyhez is pótoltként majd a végén sort-olni a kész sortingFunctions.teljesitesiData arayt dátum szerint. ///////////////////
+      const orarendTartalom = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"];
       const objToReturn = this.sortingFunctions.teljesitesiData;
 
       orarendTartalom[nap].kotelezoOra.forEach((foglalkozas) => {
@@ -1476,9 +1791,10 @@ class Menu {
           ? objToReturn[foglalkozas[1]].push({
               date: datum_str,
               hours: foglalkozas[0],
+              string: foglalkozas[3],
             })
           : (objToReturn[foglalkozas[1]] = [
-              { date: datum_str, hours: foglalkozas[0] },
+              { date: datum_str, hours: foglalkozas[0],string: foglalkozas[3], },
             ]);
 
         /* datesArray felépítése:
@@ -1688,25 +2004,25 @@ class MuNyiTemplate {
     kivetelTalalo(dateObj) {
       const currentDate = dateObj;
       let toReturn = false;
-      JSON.parse(localStorage["Munyi-Generator-kivetelek"]).forEach(
-        (kivetelArr) => {
-          if (
-            currentDate.toLocaleString("hu-HU", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            }) ==
-            new Date(kivetelArr[0]).toLocaleString("hu-HU", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })
-          ) {
-            console.log("Kivételt találtunk: " + currentDate);
-            toReturn = true;
-          }
+      GlobalFunctions.loadFromLocalStorage()[
+        "Munyi-Generator-kivetelek"
+      ].forEach((kivetelArr) => {
+        if (
+          currentDate.toLocaleString("hu-HU", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }) ==
+          new Date(kivetelArr[0]).toLocaleString("hu-HU", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          })
+        ) {
+          console.log("Kivételt találtunk: " + currentDate);
+          toReturn = true;
         }
-      );
+      });
       if (currentDate.getDay() == 0 || currentDate.getDay() == 6) {
         toReturn = true;
       }
@@ -1735,35 +2051,36 @@ class MuNyiTemplate {
 
         let kivetel, kivetelOk, kivetelTipus;
         // annak ellenőrzése, hogy van-e kivétel?
-        JSON.parse(localStorage["Munyi-Generator-kivetelek"]).forEach(
-          (kivetelArr) => {
-            if (
-              currentDate.toLocaleString("hu-HU", {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-              }) ==
-              new Date(kivetelArr[0]).toLocaleString("hu-HU", {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-              })
-            ) {
-              kivetel = true;
-              kivetelOk = kivetelArr[1];
-              kivetelTipus = kivetelArr[2];
-            }
+        
+        GlobalFunctions.loadFromLocalStorage()[
+          "Munyi-Generator-kivetelek"
+        ].forEach((kivetelArr) => {
+          if (
+            currentDate.toLocaleString("hu-HU", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }) ==
+            new Date(kivetelArr[0]).toLocaleString("hu-HU", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })
+          ) {
+            kivetel = true;
+            kivetelOk = kivetelArr[1];
+            kivetelTipus = kivetelArr[2];
           }
-        );
+        });
         if (!kivetel && (weekdayStr == "vasarnap" || weekdayStr == "szombat")) {
           kivetel = true;
           kivetelOk = "hetvege";
           kivetelTipus = "hetvege";
         }
 
-        const adat = JSON.parse(
-          localStorage["Munyi-Generator-heti-foglalkozasok"]
-        )[weekdayStr];
+
+        const adat = GlobalFunctions.loadFromLocalStorage(
+        )["Munyi-Generator-heti-foglalkozasok"][weekdayStr];
         const kotelezoOra = adat?.kotelezoOra.reduce((accu, ora) => {
           return accu + +ora[0];
         }, 0);
@@ -1804,11 +2121,14 @@ class MuNyiTemplate {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
 
+      const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
+
       const relevansFoglalkozasArr =
         datumObj.getDay() > 0 && datumObj.getDay() < 6
-          ? JSON.parse(localStorage["Munyi-Generator-heti-foglalkozasok"])[
-              datumString
-            ].kotelezoOra
+          ? GlobalFunctions.loadFromLocalStorage(
+              basicData.name,
+              basicData.date
+            )["Munyi-Generator-heti-foglalkozasok"][datumString].kotelezoOra
           : null;
 
       if (relevansFoglalkozasArr) {
@@ -2082,33 +2402,37 @@ class PrintListItem {
     this.type = type;
     this.location = location;
     this.index = Math.trunc(Math.random() * 10000);
- 
+
     this.active = true;
     this.node = this.listItemGenerator();
   }
 
-
-  listItemGenerator(){
-    const listItem = document.createElement('li'); 
-listItem.classList.add("document-to-print-li");
-
+  listItemGenerator() {
+    const listItem = document.createElement("li");
+    listItem.classList.add("document-to-print-li");
+    if (this.type === "órarend") {
+      listItem.classList.add("rose-background");
+    } else if (this.type === "MuNyi") {
+      listItem.classList.add("cyan-background");
+    }
     listItem.append(
       ` ${this.name}_${this.date}_${this.type}${
         this.location ? "_" + this.location : ""
       }`
     );
-    listItem.addEventListener('click',(e)=>{
+    listItem.addEventListener("click", (e) => {
       console.log(this);
       this.active = !this.active;
-      this.active? listItem.classList.remove('deAcivated') : listItem.classList.add('deAcivated');
+      this.active
+        ? listItem.classList.remove("deAcivated")
+        : listItem.classList.add("deAcivated");
       this.render;
-    })
+    });
 
     return listItem;
   }
 
   get render() {
-
     return this.node;
   }
 
@@ -2126,36 +2450,39 @@ class PrintLister {
     this.printBtn = this.printBtnGenerator();
 
     this.allDocumentsToPrint = [];
-    
+    this.allDocumentCollector();
     this.active = false;
   }
 
-  printBtnGenerator(){
+  printBtnGenerator() {
     const printBtn = document.createElement("button");
-  printBtn.innerHTML = "Nyomtatás<br/>🖨️";
-  printBtn.addEventListener('click', ()=>{
-    this.documentPreview();
-    console.log('Pótkerék')
-    window.print();
-  })
-  return printBtn;
+    printBtn.innerHTML = "Nyomtatás<br/>🖨️";
+    printBtn.addEventListener("click", () => {
+      this.documentPreview();
+      window.print();
+    });
+    return printBtn;
   }
 
-  get allAvailableDocumentList(){
-    
+  get allAvailableDocumentList() {
     this.allDocumentCollector();
-    
+
     const unOrderedList = document.createElement("ul");
     unOrderedList.id = "list-of-documents-to-print-ul";
-    
-    this.allDocumentsToPrint.forEach((docu,index)=>{
-      const listItem = new PrintListItem(docu.name,docu.date,docu.type,docu.location);
+
+    this.allDocumentsToPrint.forEach((docu, index) => {
+      const listItem = new PrintListItem(
+        docu.name,
+        docu.date,
+        docu.type,
+        docu.location
+      );
       unOrderedList.append(listItem.render);
       this.allDocumentsToPrint[index].listItem = listItem;
-    })
+    });
     return unOrderedList;
   }
-  
+
   allDocumentCollector() {
     const arrToReturn = [];
     const dataFromLocalStoreage = GlobalFunctions.loadFromLocalStorage(
@@ -2169,6 +2496,7 @@ class PrintLister {
       name: this.parentObject.BasicDataForm.name,
       date: this.dateSelect.value,
       type: "órarend",
+      location: "",
       object: new OrarendSablon(
         this.parentObject.BasicDataForm.name,
         this.dateSelect.value
@@ -2179,6 +2507,7 @@ class PrintLister {
       name: this.parentObject.BasicDataForm.name,
       date: this.dateSelect.value,
       type: "MuNyi",
+      location: "",
       object: new MuNyiTemplate(
         this.parentObject.BasicDataForm.name,
         this.dateSelect.value
@@ -2202,7 +2531,9 @@ class PrintLister {
       }
     );
 
-    this.allDocumentsToPrint = arrToReturn;
+    this.allDocumentsToPrint = arrToReturn.filter((item) => {
+      return item.object.printable;
+    });
   }
 
   generatorFunctions = {
@@ -2216,33 +2547,31 @@ class PrintLister {
       allDatesArr.forEach((date) => {
         selectElement.innerHTML += `<option value="${date}">${date}</option>`;
       });
-      
-      selectElement.addEventListener('change', ()=>{
+
+      selectElement.addEventListener("change", () => {
         this.allDocumentCollector();
         this.render;
-      })
+      });
       return selectElement;
     },
     sortBySelectGenerator: () => {
       const selectElement = document.createElement("select");
       selectElement.id = "dokumentumok-rendezese-select";
       selectElement.innerHTML = ` <option value="">Válassz...</option>
-    <option value="name">dolgozó neve</option>
-    <option value="date">kezdő időpont</option>
+    <option value="location">feladatvégzés helyszíne</option>
     <option value="type">dokumentum tipusa</option>`;
-    
-    
-    selectElement.addEventListener("change", () => {
-      const sortByNameDateType = (sortBy)=>{
-        this.allDocumentsToPrint.sort((objA,objB)=>{
-          console.log(objA[sortBy],objB[sortBy]);
-          if(objA[sortBy]>objB[sortBy]){
+
+      selectElement.addEventListener("change", () => {
+        const sortByNameDateType = (sortBy) => {
+          this.allDocumentsToPrint.sort((objA, objB) => {
+            console.log(objA[sortBy], objB[sortBy]);
+            if (objA[sortBy] > objB[sortBy]) {
               return 1;
-          } else return -1;
-      })
-      }  
-  
-      sortByNameDateType(this.sortBySelect.value);
+            } else return -1;
+          });
+        };
+
+        sortByNameDateType(this.sortBySelect.value);
         this.render;
       });
       return selectElement;
@@ -2254,16 +2583,15 @@ class PrintLister {
     documentList.classList.add("notToPrint");
 
     documentList.innerHTML = `<h3 class="notToPrint">Nyomtatható dokumentumok:</h3>
-    <p class="notToPrint">Pipáld ki azokat a dokumentumokat, amelyeket nyomtatni szeretnél!</p>`;
+    <p class="notToPrint">Jelöld ki azokat a dokumentumokat, amelyeket nyomtatni szeretnél!</p>`;
 
     const selectContainerP = document.createElement("p");
     selectContainerP.innerText = "Dokumentumok rendezési szempontja: ";
     selectContainerP.append(this.sortBySelect);
     documentList.append(selectContainerP);
 
-   
     documentList.append(this.allAvailableDocumentList);
-   
+
     documentList.append(this.printBtn);
 
     //documentList.append(this.documentPreview);
@@ -2296,7 +2624,7 @@ class PrintLister {
         if (!kivetel) {
           this.sortingFunctions.helyszinListazo(
             dateString,
-            currentDate.getDay()
+            new Date(dateString).getDay()
           );
         }
 
@@ -2349,9 +2677,7 @@ class PrintLister {
           return;
       }
 
-      const orarendTartalom = JSON.parse(
-        localStorage["Munyi-Generator-heti-foglalkozasok"]
-      );
+      const orarendTartalom = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"];
 
       const objToReturn = this.sortingFunctions.teljesitesiData;
 
@@ -2383,12 +2709,14 @@ class PrintLister {
     preview.classList.add("onlyToPrint");
 
     this.allDocumentsToPrint.forEach((document) => {
-      console.log(document.listItem.active)
-      if(document.listItem.active)
-      {preview.append(document["object"].render);}
+     
+      if (document.listItem.active) {
+        preview.append(document["object"].render);
+      }
     });
 
-    document.getElementsByTagName("body")[0].append(preview);
+    document.getElementById("documents-to-print").innerHTML = "";
+    document.getElementById("documents-to-print").append(preview);
   }
 
   get render() {

@@ -1,13 +1,7 @@
 /*
     teljesitesIgazolás
 */
-/*
-.teljesitesIgazolas-sablon {
-  margin: 5% 6.7%;
-  width: 80%;
-  aspect-ratio: 1.4;
-}
-*/
+
 .teljesitesIgazolas-sablon{
   margin: 0;   
   padding: 1.5cm 2cm 1.5cm 2cm;
@@ -45,4 +39,9 @@
 }
 .intezmeny-altal-kitoltendo-ures-td {
   height: 100px;
+}
+
+#belso-teljesitesi-alairas-container{
+  display: flex;
+  justify-content: flex-end;
 }

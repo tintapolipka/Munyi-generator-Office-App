@@ -8,6 +8,18 @@
     text-align: right;
 }
 
+.balra-zart{
+    text-align: left;
+}
+.kozepre-zart{
+    text-align: center;
+}
+
+.undrin-bold{
+    text-decoration: underline;
+    font-weight: bolder;
+}
+
 nav{
     width: 100%;
 }
@@ -129,19 +141,27 @@ nav{
 }
 
 #list-of-documents-to-print-ul li,.document-to-print-li{
-    background-color: rgb(102, 238, 147);
+    background-color: rgb(175, 150, 196);
     padding: 4pt;
     border-radius: 15px;
     margin-bottom: 3pt;
 }
+
 .document-to-print-li::marker{
     color:rgba(0,0,0,0);
 }
 
+.cyan-background{
+    background-color: rgb(120, 217, 255) !important;
+}
+.rose-background{
+    background-color: rgb(247, 140, 140) !important;
+}
 .border-1pt-solid-black{
     border: 1pt solid black;
 }
-
+/*
 #statikus-fejlec header{
     filter: blur(5px);
 }
+*/
