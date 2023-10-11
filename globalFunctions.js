@@ -4,6 +4,19 @@ class GlobalFunctions {
     return JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
   }
 
+  static instituteExtractor(institute_str){
+    return institute_str.split(/\d{4}/)[0].trim().match(/.+[^,;]/)[0];
+  }
+
+  static weekDayString(date){
+    let dayName;
+    if(typeof(date)=='object'){dayName= date.toLocaleString('hu-HU',{weekday:'long'}).normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")} else
+    {dayName = new Date(date).toLocaleString('hu-HU',{weekday:'long'}).normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")};
+    return dayName;
+  }
+  
   static nameFormatter(name) {
     const formattedName = name.split(" ").reduce((accu, actu) => {
       return (

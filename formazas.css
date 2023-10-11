@@ -133,7 +133,7 @@ nav{
 #print-menu h3{
     background-color: rgb(102, 238, 147);
 }
-#list-of-documents-to-print-ul{
+#list-of-documents-to-print-ul, .list-of-documents-to-print-ul{
     border: 1px solid rgb(49, 103, 67);
     
     border-radius: 15px;
