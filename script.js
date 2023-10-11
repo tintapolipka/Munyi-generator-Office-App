@@ -1052,7 +1052,7 @@ class BasicDataForm {
 
     this.confirmBtn = this.confirmBtnRender();
     this.changeDataBtn = this.changeDataBtnRender();
-
+    if(!JSON.parse(localStorage["Munyi-Generator-alapAdatok"])){localStorage.setItem("Munyi-Generator-alapAdatok",'{}')}
     this.name = JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["name"]
       ? JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["name"]
       : "";
