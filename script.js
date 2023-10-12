@@ -1071,7 +1071,7 @@ class OrarendSablon {
 //FORM ////////////////////////////////////
 class BasicDataForm {
   constructor() {
-    this.active = false;
+    this.active = true;
 
     this.node = document.createElement("form");
     this.nameInput = this.createInput("form-dolgozoneve");
@@ -1273,7 +1273,7 @@ class MunyiKivetel {
 ///////////////////////////////////////
 class MunyiDataForm {
   constructor(parentObject) {
-    this.active = false;
+    this.active = true;
 
     this.parentObject = parentObject;
 
@@ -1684,7 +1684,7 @@ class Menu {
 
     const bejelentkezve = document.createElement("p");
     bejelentkezve.classList.add("notToPrint");
-    bejelentkezve.innerText = this.BasicDataForm.name
+    bejelentkezve.innerText = this.BasicDataForm.name !="dolgozó neve"
       ? `bejelentkezve: ${this.BasicDataForm.name}`
       : "";
     this.node.append(bejelentkezve);
