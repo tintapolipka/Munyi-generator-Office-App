@@ -1660,15 +1660,18 @@ class Menu {
     navNyomtatas.classList =
       this.PrintLister.allDocumentsToPrint.length === 0 ? "inactive" : "";
     
-      if(!navNyomtatas.classList){navNyomtatas.classList = !this.BasicDataForm.allDataAvailable
-        ? "inactive"
-        : "";}
+    if(!this.BasicDataForm.allDataAvailable)
+        {navNyomtatas.classList.add("inactive");}
+     
 
     navNyomtatas.innerHTML = `<span>🖨️</span>Nyomtatás`;
     navNyomtatas.addEventListener("click", () => {
+      if(this.BasicDataForm.allDataAvailable && this.PrintLister.allTeljesitesiToPrint.length>0 && this.PrintLister.allDocumentsToPrint.length>0){
       this.collapseAll();
       this.PrintLister.active = true;
-      this.render;
+      this.render;} else {
+        alert('Nincs nyomtatható dokumentum!')
+      }
     });
     this.mainMenu.append(navNyomtatas);
 
@@ -1762,9 +1765,10 @@ class Menu {
       const link = document.createElement("li");
       link.innerText = "📰 Munyi";
       link.addEventListener("click", () => {
+        if(this.BasicDataForm.allDataAvailable){
         this.collapseAll();
         this.MuNyiTemplate.active = !this.MuNyiTemplate.active;
-        this.render;
+        this.render;}
       });
       return link;
     },
