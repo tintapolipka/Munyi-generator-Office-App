@@ -18,7 +18,11 @@ class GlobalFunctions {
   }
   
   static nameFormatter(name) {
-    const formattedName = name.split(" ").reduce((accu, actu) => {
+    let formattedName = "";  
+    if(!name){return formattedName;}
+    else if(!/ /.test(name)){formattedName = name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  } else {
+  formattedName = name.split(" ").reduce((accu, actu) => {
       return (
         accu +
         actu
@@ -27,7 +31,7 @@ class GlobalFunctions {
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
       );
-    }, "");
+    }, "");}
     return formattedName;
   }
 

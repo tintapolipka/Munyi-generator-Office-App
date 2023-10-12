@@ -1,6 +1,6 @@
 ///////TELJESITESI SELECTOR/////////////////
 class BelsoTeljesitesi {
-  constructor(datesArray, index, place){
+  constructor(datesArray, index, place) {
     this.active = false;
 
     this.index = index;
@@ -12,8 +12,8 @@ class BelsoTeljesitesi {
     this.place = place?.split(/\d{4}/)[1]
       ? place.split(/\d{4}/)[1].trim().split(" ")[0]
       : "Makó, ";
-      this.location = place;
-    
+    this.location = place;
+
     /* datesArray felépítése:
     [
         { date: "2022.10.11", hours: 10 },
@@ -21,59 +21,68 @@ class BelsoTeljesitesi {
       ]
     */
 
-    this.date = typeof(datesArray[0].date) == 'object'? date: new Date(datesArray[0].date);
-    this.node = document.createElement('div');
-  }  
+    this.date =
+      typeof datesArray[0].date == "object"
+        ? date
+        : new Date(datesArray[0].date);
+    this.node = document.createElement("div");
+  }
 
   get printable() {
     return this.name && this.dates && this.place;
   }
 
-  get template(){
-    const templateNode = document.createElement('div');
-    templateNode.innerHTML = '';
+  get template() {
+    const templateNode = document.createElement("div");
+    templateNode.innerHTML = "";
 
-    templateNode.id="belso-teljesites-igazolas-"+ this.index;
-    templateNode.classList.add('teljesitesIgazolas-sablon');
+    templateNode.id = "belso-teljesites-igazolas-" + this.index;
+    templateNode.classList.add("teljesitesIgazolas-sablon");
     templateNode.innerHTML = `<h1 class="teljesitesigazolas-h1">Teljesítésigazolás</h1>
-    <p>${this.name}, ${this.job} ${this.date.getFullYear()}. ${this.date.toLocaleString('hu-HU',{month:'long'})} hónapban,<br/>
+    <p>${this.name}, ${
+      this.job
+    } ${this.date.getFullYear()}. ${this.date.toLocaleString("hu-HU", {
+      month: "long",
+    })} hónapban,<br/>
     <span class="undrin-bold">CSCSVPSZ Makói Tagintézményében megvalósuló óráihoz: </span></p>`;
-    
-    templateNode.append(document.createElement('br'));
 
-    const teljesitettDatumok= document.createElement('div');
-    teljesitettDatumok.id="teljesitett-datumok";
+    templateNode.append(document.createElement("br"));
+
+    const teljesitettDatumok = document.createElement("div");
+    teljesitettDatumok.id = "teljesitett-datumok";
     teljesitettDatumok.innerHTML = this.everyWeek();
     templateNode.append(teljesitettDatumok);
-    
-    templateNode.append(document.createElement('br'));
 
-    const keltezes = document.createElement('p');
-    keltezes.innerText = `Dátum: Makó, ${new Date(this.dates[this.dates.length-1].date).toLocaleDateString()}`;
+    templateNode.append(document.createElement("br"));
+
+    const keltezes = document.createElement("p");
+    keltezes.innerText = `Dátum: Makó, ${new Date(
+      this.dates[this.dates.length - 1].date
+    ).toLocaleDateString()}`;
     templateNode.append(keltezes);
 
-    const alairasBlokk = document.createElement('div');
-    alairasBlokk.id="belso-teljesitesi-alairas-container";
-    alairasBlokk.classList.add('kozepre-zart');
-    
+    const alairasBlokk = document.createElement("div");
+    alairasBlokk.id = "belso-teljesitesi-alairas-container";
+    alairasBlokk.classList.add("kozepre-zart");
+
     alairasBlokk.innerHTML = `<p >_______________________<br />
     Koczkás Anikó<br/>
     igazgató</p>`;
 
     templateNode.append(alairasBlokk);
 
-    const oldalTores = document.createElement('p');
-    oldalTores.classList.add('oldal-tores');
-    oldalTores.textContent= "";
+    const oldalTores = document.createElement("p");
+    oldalTores.classList.add("oldal-tores");
+    oldalTores.textContent = "";
 
     templateNode.append(oldalTores);
-    
+
     return templateNode;
   }
 
-  get render(){
-    this.node.innerHTML = '';
-    this.node.append(this.template)
+  get render() {
+    this.node.innerHTML = "";
+    this.node.append(this.template);
     return this.node;
   }
 
@@ -82,7 +91,7 @@ class BelsoTeljesitesi {
     let lastWeekDay = -1;
     this.dates.forEach((dateObj, index) => {
       const currentDate = new Date(dateObj["date"]);
-      const currentDateStr = currentDate.toLocaleDateString('hu-HU');
+      const currentDateStr = currentDate.toLocaleDateString("hu-HU");
       //üres sor hozzáadása ha új hét kezdődött
       if (currentDate.getDay() <= lastWeekDay && this.dates.length > 5) {
         toReturn += "<br/>";
@@ -90,25 +99,29 @@ class BelsoTeljesitesi {
       lastWeekDay = currentDate.getDay();
 
       toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>${dateObj["hours"]} óra`;
-      
-      if(dateObj.string.match(/\d/g)){
-        const hoursInSring = dateObj.string.match(/\d/g).reduce((accu,actu)=>{return accu + +actu},0);
 
-        toReturn += ` (${+dateObj["hours"]-hoursInSring} óra ${dateObj["string"]})`;
+      if (dateObj.string.match(/\d/g)) {
+        const hoursInSring = dateObj.string
+          .match(/\d/g)
+          .reduce((accu, actu) => {
+            return accu + +actu;
+          }, 0);
+
+        toReturn += ` (${+dateObj["hours"] - hoursInSring} óra ${
+          dateObj["string"]
+        })`;
       } else {
         toReturn += ` (${dateObj["string"]})`;
       }
-      
-      toReturn +=`</p>`;
+
+      toReturn += `</p>`;
     });
 
     return toReturn;
   }
 
-
-
-  append(){
-    document.getElementById('root').append(this.render);
+  append() {
+    document.getElementById("root").append(this.render);
   }
 }
 
@@ -151,47 +164,55 @@ class TeljesitesSelectMenu {
     nodeToReturn.id = "teljesitesi-igazolasok";
 
     const currentrawData = this.rawData();
-this.teljesitesiLista = [];
+    this.teljesitesiLista = [];
     Object.keys(currentrawData).forEach((key, index) => {
       const title = document.createElement("h3");
       title.innerText = key + ":";
       nodeToReturn.append(title);
-// TODO: Ha a key  CSCSVPSZ, 
-//akkor ugyanabba template-be kell beküldeni (.concat-olni a két array-t) 
-let templateXXX;
-if(key === "CSCSVPSZ"){
-  function dateMerger(array){
-    let prevDate;
-    let arrToReturn =[];
-    for(let i=0;i<array.length;i++){
-    let currentDate = array[i].date;
-        if(prevDate===currentDate){
-          
-            const toPush = {date: currentDate, 
-              hours: +arrToReturn[arrToReturn.length-1].hours + +array[i].hours,
-              string:  arrToReturn[arrToReturn.length-1].string+', ' +array[i].hours + ' óra '+  array[i].string,
-            };
-            arrToReturn[arrToReturn.length-1] = toPush;
-        } else {
-            arrToReturn.push(array[i]);
-            console.log()
+      // TODO: Ha a key  CSCSVPSZ,
+      //akkor ugyanabba template-be kell beküldeni (.concat-olni a két array-t)
+      let templateXXX;
+      if (key === "CSCSVPSZ") {
+        function dateMerger(array) {
+          let prevDate;
+          let arrToReturn = [];
+          for (let i = 0; i < array.length; i++) {
+            let currentDate = array[i].date;
+            if (prevDate === currentDate) {
+              const toPush = {
+                date: currentDate,
+                hours:
+                  +arrToReturn[arrToReturn.length - 1].hours + +array[i].hours,
+                string:
+                  arrToReturn[arrToReturn.length - 1].string +
+                  ", " +
+                  array[i].hours +
+                  " óra " +
+                  array[i].string,
+              };
+              arrToReturn[arrToReturn.length - 1] = toPush;
+            } else {
+              arrToReturn.push(array[i]);
+              console.log();
+            }
+            prevDate = currentDate;
+          }
+          return arrToReturn;
         }
-        prevDate = currentDate;
-    }
-    return arrToReturn;
-}
-templateXXX = new BelsoTeljesitesi(dateMerger(currentrawData[key]), index, key);
-this.teljesitesiLista.push(templateXXX);
-} else {     
-  templateXXX = new teljesitesiTemplate(currentrawData[key], index, key);
-  this.teljesitesiLista.push(templateXXX);
-    }
-    nodeToReturn.append(templateXXX.render);  
-  });
-    
-  
-  return nodeToReturn;
+        templateXXX = new BelsoTeljesitesi(
+          dateMerger(currentrawData[key]),
+          index,
+          key
+        );
+        this.teljesitesiLista.push(templateXXX);
+      } else {
+        templateXXX = new teljesitesiTemplate(currentrawData[key], index, key);
+        this.teljesitesiLista.push(templateXXX);
+      }
+      nodeToReturn.append(templateXXX.render);
+    });
 
+    return nodeToReturn;
   }
 
   get render() {
@@ -229,7 +250,7 @@ class teljesitesiTemplate {
       ? place.split(/\d{4}/)[1].trim().split(" ")[0]
       : "Makó, ";
     this.location = place;
-  
+
     /* datesArray felépítése:
     [
         { date: "2022.10.11", hours: 10 },
@@ -310,8 +331,10 @@ class teljesitesiTemplate {
       }
       lastWeekDay = currentDate.getDay();
 
-      toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>`
-      toReturn += dateObj["string"]? ` munkarend átrendezés miatt intézményi óra` : `(${dateObj["hours"]} óra)`;
+      toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>`;
+      toReturn += dateObj["string"]
+        ? ` munkarend átrendezés miatt intézményi óra`
+        : `(${dateObj["hours"]} óra)`;
       toReturn += `</p>`;
     });
 
@@ -325,7 +348,12 @@ class teljesitesiTemplate {
 
 //////////////////////////Órarend//////////////////////
 class OrarendFoglalkozas {
-  constructor(foglalkozasIdeje, foglalkozasHelye, tulora = false, alapfeladat='') {
+  constructor(
+    foglalkozasIdeje,
+    foglalkozasHelye,
+    tulora = false,
+    alapfeladat = ""
+  ) {
     this.id = Math.trunc(Math.random() * 10000) + "-foglalkozas";
 
     this.foglalkozasHelye = foglalkozasHelye;
@@ -382,7 +410,6 @@ class OrarendFoglalkozas {
       this.intezmenyiOraCheckBox.checked &&
       this.alapfeladatSelect.value
     ) {
-      
       this.foglalkozasHelye = "CSCSVPSZ";
       this.alapfeladat = this.alapfeladatSelect.value;
     } else if (
@@ -452,7 +479,7 @@ class OrarendFoglalkozas {
     helyszinOszlop.classList = "orarend-adat helyszin-oszlop";
     if (this.foglalkozasHelye && !this.alapfeladat) {
       helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye}</span>`;
-    } else if(this.foglalkozasHelye && this.alapfeladat){
+    } else if (this.foglalkozasHelye && this.alapfeladat) {
       helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye} - ${this.alapfeladat}</span>`;
     } else {
       helyszinOszlop.append(this.intezmenyiOraCheckBox, "benti óra");
@@ -825,7 +852,7 @@ class OrarendHet {
           napiFoglalkozasok[i].foglalkozasIdeje,
           napiFoglalkozasok[i].foglalkozasHelye,
           napiFoglalkozasok[i].foglalkozasTulora,
-          napiFoglalkozasok[i].alapfeladat
+          napiFoglalkozasok[i].alapfeladat,
         ]);
       }
 
@@ -1009,13 +1036,14 @@ class OrarendSablon {
           ¤ a heti kötelező óraszám nem haladhatja meg a 21 órát!`;
           alert(popUp);
           return popUp;
-        }
-        else if (this.hetiOraszam < 21) {
+        } else if (this.hetiOraszam < 21) {
           const popUp = `A teljes héten a következő problémát találtuk:
           ¤ a heti kötelező óraszám nem lehet kevesebb mint 21 óra! Kivételt csak félállás (11 kötelező óra) jelenthet!`;
           alert(popUp);
           return popUp;
-        } else {return '';}
+        } else {
+          return "";
+        }
       };
       this.hetiHibaUzenet.innerText =
         this.teljeshet.hetfo.napEllenorzese() +
@@ -1052,7 +1080,9 @@ class BasicDataForm {
 
     this.confirmBtn = this.confirmBtnRender();
     this.changeDataBtn = this.changeDataBtnRender();
-    if(!localStorage["Munyi-Generator-alapAdatok"]){localStorage.setItem("Munyi-Generator-alapAdatok",'{}')}
+    // if (!localStorage["Munyi-Generator-alapAdatok"]) {
+    //   localStorage.setItem("Munyi-Generator-alapAdatok", "{}");
+    // }
     this.name = JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["name"]
       ? JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["name"]
       : "";
@@ -1065,7 +1095,7 @@ class BasicDataForm {
       ? JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["date"]
       : "";
 
-    this.allDataAvailable = this.name && this.munkakor && this.date;
+    this.allDataAvailable = this.name !='dolgozó neve' && this.munkakor !='munkakör' && this.date;
   }
 
   putToLocalStorage() {
@@ -1242,8 +1272,10 @@ class MunyiKivetel {
 }
 ///////////////////////////////////////
 class MunyiDataForm {
-  constructor() {
+  constructor(parentObject) {
     this.active = false;
+
+    this.parentObject = parentObject;
 
     this.node = document.createElement("div");
     this.kivetelListaNode = document.createElement("div");
@@ -1262,13 +1294,12 @@ class MunyiDataForm {
   }
 
   saveToLocalStorage() {
-    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
     const munyiKivetelArr = this.allMunyiKivetel.map((exception) => {
       return [exception.date, exception.indok, exception.tipus];
     });
     GlobalFunctions.saveToLocalStorage(
-      basicData.name,
-      basicData.date,
+      this.parentObject.BasicDataForm.name,
+      this.parentObject.BasicDataForm.date,
       "Munyi-Generator-kivetelek",
       munyiKivetelArr
     );
@@ -1283,22 +1314,16 @@ class MunyiDataForm {
   }
 
   getFromLocalStorage() {
-    const basicData = JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
-    const allData = GlobalFunctions.loadFromLocalStorage(
-      basicData.name,
-      basicData.date
-    );
+    const allData = GlobalFunctions.loadFromLocalStorage();
     if (!allData["Munyi-Generator-kivetelek"]) {
       GlobalFunctions.saveToLocalStorage(
-        basicData.name,
-        basicData.date,
+        this.parentObject.BasicDataForm.name,
+      this.parentObject.BasicDataForm.date,
         "Munyi-Generator-kivetelek",
         []
       );
     }
-    return GlobalFunctions.loadFromLocalStorage(basicData.name, basicData.date)[
-      "Munyi-Generator-kivetelek"
-    ];
+    return GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
   }
 
   hetnapjai = ["hétfő", "kedd", "szerda", "csütörök", "péntek"];
@@ -1316,7 +1341,7 @@ class MunyiDataForm {
     const dateString = GlobalFunctions.weekDayString(this.idopontInput.value);
     return GlobalFunctions.loadFromLocalStorage()[
       "Munyi-Generator-heti-foglalkozasok"
-    ][dateString]["kotelezoOra"].map((ora)=>ora[0]+' óra '+ora[1])
+    ][dateString]["kotelezoOra"].map((ora) => ora[0] + " óra " + ora[1]);
   }
 
   get kiveteldatuma() {
@@ -1334,7 +1359,7 @@ class MunyiDataForm {
       ? "kinti óra ledolgozása"
       : "munkanap áthelyezés";
   }
-  
+
   get ledolgozottNap() {
     return this.munkanapSelect.value;
   }
@@ -1370,22 +1395,22 @@ class MunyiDataForm {
           ? [datum, indok, tipus]
           : [datum, this.hetnapjai[hetnapja] + "i munkanap pótlása", tipus];
       this.kivetelObjGenerator([toReturn]);
-    } else if(tipus == 'kinti óra ledolgozása'){
-      this.kivetelObjGenerator([[datum, this.intezmenyiOraIndex,tipus]]);
-      console.warn('Intézményi óra ledolgozása');
+    } else if (tipus == "kinti óra ledolgozása") {
+      this.kivetelObjGenerator([[datum, this.intezmenyiOraIndex, tipus]]);
+      console.warn("Intézményi óra ledolgozása");
     } else {
       console.log("Adathiány TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
   }
 
-  get intezmenyiOraSelect(){
-    const selectElement= this.selectGenetator(this.ledolgozhatoOrak);
-    selectElement.addEventListener('change',(e)=>{
-    this.intezmenyiOraIndex = this.ledolgozhatoOrak[e.target.value];
-    })
+  get intezmenyiOraSelect() {
+    const selectElement = this.selectGenetator(this.ledolgozhatoOrak);
+    selectElement.addEventListener("change", (e) => {
+      this.intezmenyiOraIndex = this.ledolgozhatoOrak[e.target.value];
+    });
     return selectElement;
-  } 
-  
+  }
+
   get hozzaadasBtn() {
     const button = document.createElement("button");
     button.innerText = "Hozzáadás";
@@ -1488,7 +1513,8 @@ class MunyiDataForm {
 
     if (this.kiveteltipusa == "kinti óra ledolgozása") {
       const kintiOraFieldset = document.createElement("fieldset");
-      kintiOraFieldset.innerHTML = "<legend>Melyik órát dolgoztad le bent?</legend>";
+      kintiOraFieldset.innerHTML =
+        "<legend>Melyik órát dolgoztad le bent?</legend>";
       kintiOraFieldset.append(this.intezmenyiOraSelect);
       kivetelTipusaFieldset.append(kintiOraFieldset);
     }
@@ -1543,13 +1569,15 @@ class MunyiDataForm {
 
 class Menu {
   constructor() {
+    this.firstRun();
+
     this.memoryAddress = this;
     this.node = document.createElement("div");
     this.navBar = document.createElement("nav");
     this.mainMenu = document.createElement("ul");
 
     this.BasicDataForm = new BasicDataForm();
-    this.MunyiDataForm = new MunyiDataForm();
+    this.MunyiDataForm = new MunyiDataForm(this);
     this.OrarendSablon = new OrarendSablon(
       this.BasicDataForm.name,
       this.BasicDataForm.date
@@ -1566,6 +1594,16 @@ class Menu {
     this.orarendLink = this.linkGenerators.orarendLinkRender();
     this.teljesitesLink = this.linkGenerators.teljesitLinkGenerator();
     this.munyiLink = this.linkGenerators.munyiLinkGenerator();
+  
+  }
+
+  firstRun(){
+    if(!localStorage['Munyi-Generator-alapAdatok']){
+       localStorage['Munyi-Generator-alapAdatok'] = '{"name":"dolgozó neve","munkakor":"munkakör","date":"2023-09-01"}';
+    }
+    if(!localStorage['Munyi-generator']){
+      localStorage['Munyi-generator'] = '{"Munyi-Generator-kivetelek":[],"Munyi-Generator-heti-foglalkozasok":{"hetfo":{"kotelezoOra":[],"szabadOra":{}},"kedd":{"kotelezoOra":[],"szabadOra":{}},"szerda":{"kotelezoOra":[],"szabadOra":{}},"csutortok":{"kotelezoOra":[],"szabadOra":{}},"pentek":{"kotelezoOra":[],"szabadOra":{}}},"Munyi-Generator-alapAdatok":{"name":"dolgozó neve","munkakor":"munkakör","date":"2023-09-01"}}';
+    }
   }
 
   collapseAll() {
@@ -1621,6 +1659,11 @@ class Menu {
 
     navNyomtatas.classList =
       this.PrintLister.allDocumentsToPrint.length === 0 ? "inactive" : "";
+    
+      if(!navNyomtatas.classList){navNyomtatas.classList = !this.BasicDataForm.allDataAvailable
+        ? "inactive"
+        : "";}
+
     navNyomtatas.innerHTML = `<span>🖨️</span>Nyomtatás`;
     navNyomtatas.addEventListener("click", () => {
       this.collapseAll();
@@ -1637,7 +1680,7 @@ class Menu {
     this.node.innerHTML = "";
 
     const bejelentkezve = document.createElement("p");
-    bejelentkezve.classList.add('notToPrint');
+    bejelentkezve.classList.add("notToPrint");
     bejelentkezve.innerText = this.BasicDataForm.name
       ? `bejelentkezve: ${this.BasicDataForm.name}`
       : "";
@@ -1746,7 +1789,7 @@ class Menu {
           "-" +
           (startMonth + 1 < 10 ? "0" + (startMonth + 1) : startMonth + 1) +
           "-" +
-          (currentDay < 10? "0" + currentDay : currentDay);
+          (currentDay < 10 ? "0" + currentDay : currentDay);
 
         const kivetel = this.sortingFunctions.kivetelTartalma(dateString);
 
@@ -1769,26 +1812,43 @@ class Menu {
       /////////TODO///////////////////////////////////////////////////////////////////
     },
     kivetelTartalma: (dateString) => {
-      
-      const kivetelLista = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
+      const kivetelLista =
+        GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
       let toReturn = "";
       kivetelLista.forEach((kivetel) => {
         if (kivetel[0] == dateString) {
           // Itt lehet csinálni valamit a találattal
-        if(kivetel[2]== 'kinti óra ledolgozása'){
-          if(!this.sortingFunctions.teljesitesiData['CSCSVPSZ']){
-            this.sortingFunctions.teljesitesiData['CSCSVPSZ'] = [];
-          };
-          this.sortingFunctions.teljesitesiData['CSCSVPSZ'].push({ date: kivetel[0], hours: kivetel[1].match(/\d+/)[0], string: kivetel[1].split(' óra ')[1].split(/\d{4}/)[0].trim().match(/.+[^,;]/)[0] + ' intézményi óra'})
-          const helyszin = kivetel[1].split(' óra ')[1];
-          
-          if(!this.sortingFunctions.teljesitesiData[helyszin]){
-            this.sortingFunctions.teljesitesiData[helyszin] = [];
-          } 
-          this.sortingFunctions.teljesitesiData[helyszin].push({ date: kivetel[0], hours: kivetel[1].match(/\d+/)[0], string: kivetel[1].split(' óra ')[1].split(/\d{4}/)[0].trim().match(/.+[^,;]/)[0] + ' intézményi óra'})
-        }
-        
-         
+          if (kivetel[2] == "kinti óra ledolgozása") {
+            if (!this.sortingFunctions.teljesitesiData["CSCSVPSZ"]) {
+              this.sortingFunctions.teljesitesiData["CSCSVPSZ"] = [];
+            }
+            this.sortingFunctions.teljesitesiData["CSCSVPSZ"].push({
+              date: kivetel[0],
+              hours: kivetel[1].match(/\d+/)[0],
+              string:
+                kivetel[1]
+                  .split(" óra ")[1]
+                  .split(/\d{4}/)[0]
+                  .trim()
+                  .match(/.+[^,;]/)[0] + " intézményi óra",
+            });
+            const helyszin = kivetel[1].split(" óra ")[1];
+
+            if (!this.sortingFunctions.teljesitesiData[helyszin]) {
+              this.sortingFunctions.teljesitesiData[helyszin] = [];
+            }
+            this.sortingFunctions.teljesitesiData[helyszin].push({
+              date: kivetel[0],
+              hours: kivetel[1].match(/\d+/)[0],
+              string:
+                kivetel[1]
+                  .split(" óra ")[1]
+                  .split(/\d{4}/)[0]
+                  .trim()
+                  .match(/.+[^,;]/)[0] + " intézményi óra",
+            });
+          }
+
           toReturn = kivetel;
         }
       });
@@ -1797,10 +1857,15 @@ class Menu {
 
     helyszinListazo: (datum_str) => {
       let nap = GlobalFunctions.weekDayString(datum_str);
-      
-      if(nap=='szombat'||nap=='vasarnap'){return};
 
-      const orarendTartalom = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"];
+      if (nap == "szombat" || nap == "vasarnap") {
+        return;
+      }
+
+      const orarendTartalom =
+        GlobalFunctions.loadFromLocalStorage()[
+          "Munyi-Generator-heti-foglalkozasok"
+        ];
       const objToReturn = this.sortingFunctions.teljesitesiData;
 
       orarendTartalom[nap].kotelezoOra.forEach((foglalkozas) => {
@@ -1811,7 +1876,11 @@ class Menu {
               string: foglalkozas[3],
             })
           : (objToReturn[foglalkozas[1]] = [
-              { date: datum_str, hours: foglalkozas[0],string: foglalkozas[3], },
+              {
+                date: datum_str,
+                hours: foglalkozas[0],
+                string: foglalkozas[3],
+              },
             ]);
 
         /* datesArray felépítése:
@@ -1843,7 +1912,7 @@ class DinamikusMunyiSor {
     kivetelTipus,
     tulora,
     utazasiKoltseg
-  ) {    
+  ) {
     this.date = new Date(date); //date obj
     this.kotelezoOra = kotelezoOra; //num
     this.kotelezoOraToCount = this.kotelezoOra;
@@ -1884,7 +1953,9 @@ class DinamikusMunyiSor {
       this.szabadOraObj = {};
       this.utazasiKoltseg = "";
     }
-    if(kivetelTipus =='kinti óra ledolgozása'){this.kivetelOk=''};
+    if (kivetelTipus == "kinti óra ledolgozása") {
+      this.kivetelOk = "";
+    }
   }
 
   get szabadOraSumma() {
@@ -2069,7 +2140,7 @@ class MuNyiTemplate {
 
         let kivetel, kivetelOk, kivetelTipus;
         // annak ellenőrzése, hogy van-e kivétel?
-        
+
         GlobalFunctions.loadFromLocalStorage()[
           "Munyi-Generator-kivetelek"
         ].forEach((kivetelArr) => {
@@ -2096,9 +2167,10 @@ class MuNyiTemplate {
           kivetelTipus = "hetvege";
         }
 
-
-        const adat = GlobalFunctions.loadFromLocalStorage(
-        )["Munyi-Generator-heti-foglalkozasok"][weekdayStr];
+        const adat =
+          GlobalFunctions.loadFromLocalStorage()[
+            "Munyi-Generator-heti-foglalkozasok"
+          ][weekdayStr];
         const kotelezoOra = adat?.kotelezoOra.reduce((accu, ora) => {
           return accu + +ora[0];
         }, 0);
@@ -2467,7 +2539,9 @@ class PrintLister {
     this.dateSelect = this.generatorFunctions.dateSelectGenerator();
     this.printBtn = this.printBtnGenerator(this.documentPreview.bind(this));
 
-    this.printTeljesitesiBtn = this.printBtnGenerator(this.teljesitesiPreview.bind(this));
+    this.printTeljesitesiBtn = this.printBtnGenerator(
+      this.teljesitesiPreview.bind(this)
+    );
     this.allTeljesitesiToPrint = [];
     this.allTeljesitesiCollector();
 
@@ -2576,7 +2650,7 @@ class PrintLister {
       unOrderedList.append(listItem.render);
       this.allDocumentsToPrint[index].listItem = listItem;
     });
-    
+
     unOrderedList.append(this.printBtn);
 
     return unOrderedList;
@@ -2584,7 +2658,7 @@ class PrintLister {
 
   allDocumentCollector() {
     const arrToReturn = [];
-    
+
     //órarend hozzáadása:
     arrToReturn.push({
       name: this.parentObject.BasicDataForm.name,
@@ -2796,7 +2870,10 @@ class PrintLister {
           return;
       }
 
-      const orarendTartalom = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"];
+      const orarendTartalom =
+        GlobalFunctions.loadFromLocalStorage()[
+          "Munyi-Generator-heti-foglalkozasok"
+        ];
 
       const objToReturn = this.sortingFunctions.teljesitesiData;
 
@@ -2828,7 +2905,6 @@ class PrintLister {
     preview.classList.add("onlyToPrint");
 
     this.allDocumentsToPrint.forEach((document) => {
-
       if (document.listItem.active) {
         preview.append(document["object"].render);
       }
