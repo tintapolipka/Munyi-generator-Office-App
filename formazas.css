@@ -75,9 +75,16 @@ nav{
     opacity: .3;
 }
 
+#szabad-ora-form{
+    background-color: rgb(243, 212, 111);
+    border-radius: 5pt;
+    padding: 0 0 2pt 0;
+}
 
 #teljesitesi-igazolasok h3{
     background-color: rgb(175, 150, 196);
+    padding: 3pt;
+    border-radius: 5pt;
 }
 
 .szabad-ora-select{width:6rem;}
