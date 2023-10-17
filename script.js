@@ -1901,8 +1901,10 @@ class Menu {
 
         const kivetel = this.sortingFunctions.kivetelTartalma(dateString);
 
-        if (kivetel) {
+      
+        if (kivetel && kivetel[2] != 'kinti óra ledolgozása') {
           console.log("Kivétel kezelése: ", currentDate);
+          console.error('kivetel: ',kivetel)
         }
         //szortírozás órarend szerint
         else {
