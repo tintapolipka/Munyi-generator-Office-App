@@ -2243,7 +2243,28 @@ class MuNyiTemplate {
     return this.name && this.date != "Invalid Date";
   }
 
-  get koviHonapElsoMunkanap() {
+  get koviHonapElsoMunkanap(){
+
+    const elsoMunkanapok2023 = {
+      'january': '2023.02.01.',
+      'february': '2023.03.01.',
+      'march':'2023.04.03.',
+      'april':'2023.05.02.',
+      'may':'2023.06.01.',
+      'june':'2023.07.03.',
+      'july':'2023.08.01.',
+      'august':'2023.09.01.',
+      'september':'2023.10.02.',
+      'october':'2023.11.02.',
+      'november':'2023.12.01.',
+      'december':'2024.01.03.'
+    }
+    const thisDateObj = new Date(this.date);
+
+    return new Date(elsoMunkanapok2023[thisDateObj.toLocaleString('en-US',{month:'long'}).toLowerCase()]); 
+  }
+  
+  get koviHonapElsoMunkanap_eredeti() {
     const jovoHonapElsoNapja = (thisDotDate) => {
       return (
         thisDotDate.getFullYear() +
@@ -2257,7 +2278,7 @@ class MuNyiTemplate {
     let dayToTry = new Date(jovoHonapElsoNapja(this.date));
 
     const okDay = (day) => {
-      if (!this.sortingFunctions.kivetelTalalo(day)) {
+      if (!this.sortingFunctions.kivetelTalalo(day,true)) {
         return;
       } else {
         dayToTry = new Date(
@@ -2277,12 +2298,16 @@ class MuNyiTemplate {
   sortingFunctions = {
     dinamikusMunyiSorList: [],
 
-    kivetelTalalo(dateObj) {
+    kivetelTalalo(dateObj,isNextMonth = false) {
       const currentDate = dateObj;
       let toReturn = false;
-      GlobalFunctions.loadFromLocalStorage()[
+      const savedExceptions = GlobalFunctions.loadFromLocalStorage()[
         "Munyi-Generator-kivetelek"
-      ].forEach((kivetelArr) => {
+      ]
+      let exceptionsToTest = isNextMonth? savedExceptions.concat(exceptions) : savedExceptions;
+      console.error(exceptionsToTest);
+
+      exceptionsToTest.forEach((kivetelArr) => {
         if (
           currentDate.toLocaleString("hu-HU", {
             year: "numeric",
