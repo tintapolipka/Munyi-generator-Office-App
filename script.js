@@ -500,7 +500,7 @@ class OrarendFoglalkozas {
     if (this.foglalkozasHelye && !this.alapfeladat) {
       helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye}</span>`;
     } else if (this.foglalkozasHelye && this.alapfeladat) {
-      helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye} - ${this.alapfeladat}</span>`;
+      helyszinOszlop.innerHTML = `<span>${this.foglalkozasHelye}</span><span class="onlyToPrint"> 6900 Makó, Vásárhelyi u. 1-3.</span><span class="notToPrint">${this.alapfeladat}</span>`;
     } else {
       helyszinOszlop.append(this.intezmenyiOraCheckBox, "benti óra");
       helyszinOszlop.append(document.createElement("br"));
@@ -790,9 +790,12 @@ class OrarendNap {
     });
     //mennyi sor kell még az 5-höz?
     let emptyRows = 5 - Object.keys(this.foglalkozasCollection).length;
+    let emptyIndex = 5- emptyRows;
     while (emptyRows > 0) {
       const sor = document.createElement("div");
       sor.classList.add("sor");
+      sor.classList.add(`sor-${emptyIndex}`)
+      emptyIndex++;
       sor.classList.add("onlyToPrint");
       const idopontOszlop = document.createElement("div");
       idopontOszlop.classList = "orarend-adat idopont-oszlop";
@@ -801,8 +804,7 @@ class OrarendNap {
       helyszinOszlop.classList = "orarend-adat helyszin-oszlop";
       sor.append(helyszinOszlop);
       this.node.append(sor);
-
-      //console.log("Hozzáadok 1 sort: " + this.nap);
+      //to next iteration
       emptyRows--;
     }
 
@@ -2843,6 +2845,7 @@ class PrintLister {
     printBtn.innerHTML = "Nyomtatás<br/>🖨️";
     printBtn.addEventListener("click", () => {
       previewFn();
+      
       window.print();
     });
     return printBtn;
@@ -3069,6 +3072,32 @@ class PrintLister {
 
     document.getElementById("documents-to-print").innerHTML = "";
     document.getElementById("documents-to-print").append(preview);
+    this.orarendRowEqualizer();
+  }
+
+  orarendRowEqualizer(){
+    let allRowsHeight = 330;
+   
+    let x = 0;
+    while(document.getElementsByClassName(`sor-${x}`)[0]){
+      let maxHeight = 0;
+      for(let i = 0; i<document.getElementsByClassName(`sor-${x}`).length;i++)
+    {
+      if(document.getElementsByClassName(`sor-${x}`)[i].clientHeight>maxHeight){
+        maxHeight = document.getElementsByClassName(`sor-${x}`)[i].clientHeight;
+      }
+      console.log('clientHight '+ x+ '. sor, '+i+'.dik eleme: '+ document.getElementsByClassName(`sor-${x}`)[i].clientHeight  )
+    }
+    
+    if(maxHeight){
+      const CSSrule = document.createElement('style');
+    CSSrule.innerHTML = `.sor-${x}{height:${maxHeight+1}px;}`;
+    document.getElementById('documents-to-print').append(CSSrule);
+    console.log('VOLT SOR AMIT átméreteztünk: '+x+' erre: '+ maxHeight);
+    }
+  x++;
+  }
+    //return maxHeight;
   }
 
   get render() {

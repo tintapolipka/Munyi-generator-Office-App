@@ -74,6 +74,14 @@
 
 .orarend-print{
     height: 210mm;
-    width: 297mm;
-    padding: 1.5cm 2cm 1.5cm 2cm;
+    width: 267mm;
+    padding: 1.5cm 0cm 1.5cm 2cm;
+}
+
+#teljes-het{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 225mm;
+
 }
