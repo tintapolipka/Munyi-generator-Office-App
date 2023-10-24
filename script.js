@@ -755,8 +755,12 @@ class OrarendNap {
         ? `¤ a kötelező órák száma nem lehet kevesebb 3 óránál! Kivétel: fél álláshely esetén (11 heti kötelező óra), vagy vezetői pozíció lehet.\n`
         : "";
 
+if((this.kikuldetesSum && this.foglalkozasutazas != "K")||(this.kikuldetesSum && this.foglalkozasutazas != "M/K")){
+  hibaUzenet += '¤ Van kiküldetésként megjelölt kötelező óra, de az utazás típusa mégsem M, vagy M/K!\n';
+}
+
     if (
-      (this.foglalkozasutazas == "K" || this.foglalkozasutazas == "M/K") &&
+      (this.foglalkozasutazas == "K" || this.foglalkozasutazas == "M/K" || this.kikuldetesSum) &&
       !this.szabadOraList["14."]
     ) {
       hibaUzenet +=
@@ -2178,7 +2182,6 @@ class DinamikusMunyiSor {
       this.utazasiKoltseg = "";
     }
     if (kivetelTipus == "kinti óra ledolgozása") {
-      console.warn('kivetel: ',this.kivetel,'kivetelOk: ',this.kivetelOk)
       this.kivetelOk = "";
     }
     if (this.kivetelOk == "ünnepnap") {
@@ -2424,7 +2427,6 @@ class MuNyiTemplate {
                   arrayToReduce.push(item);
                 }
               })
-              console.error(arrayToReduce);
             }
           }
         });
@@ -2504,6 +2506,15 @@ class MuNyiTemplate {
           szabadOraObj = adat ? adat.szabadOra : {};
           tulora = this.sortingFunctions.tuloraAznap(currentDate);
           utazas = adat ? adat.munkabaJaras : "";
+          if(utazas=='K' || utazas=='M/K'){
+            const thisWeekday = GlobalFunctions.nameFormatter(currentDate.toLocaleString('hu-HU',{weekday:"long"}))
+            const allKikuldetesOra = this.parentObject.OrarendSablon.teljeshet[thisWeekday].kikuldetesSum;
+            const kikuldetesLeft = this.sortingFunctions.kikuldetesTester(currentDate)
+            if(!(allKikuldetesOra-kikuldetesLeft)){
+              utazas = utazas == 'M/K'? 'M' : '';
+              console.error('MOst csak:' ,utazas);
+            };
+          }
         }
 
         this.sortingFunctions.dinamikusMunyiSorList.push(
@@ -2552,7 +2563,7 @@ class MuNyiTemplate {
             return accu + +foglalkozas[0];
           } else {
             //Nem volt túlóra.
-            return 0;
+            return accu;
           }
         }, 0);
       }
