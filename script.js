@@ -368,13 +368,15 @@ class OrarendFoglalkozas {
     foglalkozasHelye,
     tulora = false,
     alapfeladat = "",
-    index
+    index,
+    kikuldetes = false,
   ) {
     this.id = Math.trunc(Math.random() * 10000) + "-foglalkozas";
 
     this.foglalkozasHelye = foglalkozasHelye;
     this.foglalkozasIdeje = foglalkozasIdeje;
     this.foglalkozasTulora = tulora;
+    this.foglalkozasKikuldetes = kikuldetes;
     this.intezmenyiOraLesz = false;
     this.alapfeladat = alapfeladat;
     this.index = index;
@@ -388,6 +390,10 @@ class OrarendFoglalkozas {
       "Helyszín"
     );
     this.tuloraCheckBox = this.createInput(`${this.id}-tulora`, "checkbox");
+    this.kikuldetesCheckbox = this.createInput(
+      `${this.id}-kikuldetes`,
+      "checkbox"
+    );
     this.intezmenyiOraCheckBox = this.createInput(
       `${this.id}-intezmenyiOra`,
       "checkbox"
@@ -445,6 +451,7 @@ class OrarendFoglalkozas {
       this.idopontInput.classList.add("adatHiany");
     }
     this.foglalkozasTulora = this.tuloraCheckBox.checked;
+    this.foglalkozasKikuldetes = this.kikuldetesCheckbox.checked;
     this.render;
   }
 
@@ -473,7 +480,11 @@ class OrarendFoglalkozas {
     return `<div class="orarend-adat idopont-oszlop">
     <span>${this.foglalkozasIdeje}</span>${
       this.foglalkozasTulora ? "<br /> túlóra" : ""
-    }</div>`;
+    }
+    ${
+      this.foglalkozasKikuldetes ? "<br /> kiküldetés" : ""
+    }
+    </div>`;
   }
 
   get render() {
@@ -488,9 +499,16 @@ class OrarendFoglalkozas {
       const idopontOszlop = document.createElement("div");
       idopontOszlop.classList = "orarend-adat idopont-oszlop";
       idopontOszlop.innerText = "Óraszám: ";
-      idopontOszlop.append(this.idopontInput);
-      idopontOszlop.append(document.createElement("br"));
-      idopontOszlop.append("túlóra-e?", this.tuloraCheckBox);
+
+      idopontOszlop.append(
+        this.idopontInput,
+        document.createElement("br"),
+        "túlóra-e?",
+        this.tuloraCheckBox,
+        "kiküldetés?",
+        document.createElement("br"),
+        this.kikuldetesCheckbox
+      );
 
       this.container.appendChild(idopontOszlop);
     }
@@ -535,7 +553,8 @@ class OrarendNap {
         foglalkozas[1],
         foglalkozas[2],
         foglalkozas[3],
-        index
+        index,
+        foglalkozas[4],
       );
       this.foglalkozasCollection[newNode.id] = newNode;
     });
@@ -544,6 +563,23 @@ class OrarendNap {
     this.szabadOraBtn = this.createSzabadOraBtn();
     this.munkabaJarasSelect = this.munkabaJarasSelectGenerator();
     this.szabadOraList = this.szabadOraListFromLocalStorage();
+  }
+  get kikuldetesSum(){
+    const thisWeekday = GlobalFunctions.nameFormatter(this.nap);
+    const dataArr =
+      GlobalFunctions.loadFromLocalStorage()[
+        "Munyi-Generator-heti-foglalkozasok"
+      ][thisWeekday].kotelezoOra;
+    if (dataArr.length > 0) {
+      return dataArr.reduce((accu, foglalkozas) => {
+
+        if (foglalkozas[4]) {
+          return accu + +foglalkozas[0];
+        } else {
+          return accu;
+        }
+      }, 0);
+    }  
   }
 
   get tuloraSum() {
@@ -790,11 +826,11 @@ class OrarendNap {
     });
     //mennyi sor kell még az 5-höz?
     let emptyRows = 5 - Object.keys(this.foglalkozasCollection).length;
-    let emptyIndex = 5- emptyRows;
+    let emptyIndex = 5 - emptyRows;
     while (emptyRows > 0) {
       const sor = document.createElement("div");
       sor.classList.add("sor");
-      sor.classList.add(`sor-${emptyIndex}`)
+      sor.classList.add(`sor-${emptyIndex}`);
       emptyIndex++;
       sor.classList.add("onlyToPrint");
       const idopontOszlop = document.createElement("div");
@@ -898,6 +934,7 @@ class OrarendHet {
           napiFoglalkozasok[i].foglalkozasHelye,
           napiFoglalkozasok[i].foglalkozasTulora,
           napiFoglalkozasok[i].alapfeladat,
+          napiFoglalkozasok[i].foglalkozasKikuldetes
         ]);
       }
 
@@ -1803,7 +1840,7 @@ class Menu {
 
     navNyomtatas.innerHTML = `<span>🖨️</span>Nyomtatás`;
     navNyomtatas.addEventListener("click", () => {
-      // A printlister-t rendereltetem, hogy kiszámolja hány teljesítés áll rendelkezésre
+      // A printlister-t rendereltetem, hogy kiszámolja hány teljesítési áll rendelkezésre
       this.PrintLister.render;
       if (
         this.BasicDataForm.allDataAvailable &&
@@ -2109,6 +2146,9 @@ class DinamikusMunyiSor {
       this.szabadOraObj = {};
       this.utazasiKoltseg = "";
     }
+    if(this.tulora){
+      this.kotelezoOra = this.kotelezoOra - this.tulora;
+    }
 
     if (kivetelOk == "tanítás nélküli munkanap") {
       this.szabadOraObj = { "11.": this.kotelezoOra };
@@ -2124,6 +2164,7 @@ class DinamikusMunyiSor {
       this.utazasiKoltseg = "";
     }
     if (kivetelTipus == "kinti óra ledolgozása") {
+      console.warn('kivetel: ',this.kivetel,'kivetelOk: ',this.kivetelOk)
       this.kivetelOk = "";
     }
     if (this.kivetelOk == "ünnepnap") {
@@ -2245,33 +2286,36 @@ class MuNyiTemplate {
     return this.name && this.date != "Invalid Date";
   }
 
-  get koviHonapElsoMunkanap(){
-
+  get koviHonapElsoMunkanap() {
     const elsoMunkanapok2023 = {
-      'january': '2023.02.01.',
-      'february': '2023.03.01.',
-      'march':'2023.04.03.',
-      'april':'2023.05.02.',
-      'may':'2023.06.01.',
-      'june':'2023.07.03.',
-      'july':'2023.08.01.',
-      'august':'2023.09.01.',
-      'september':'2023.10.02.',
-      'october':'2023.11.02.',
-      'november':'2023.12.01.',
-      'december':'2024.01.03.'
-    }
+      january: "2023.02.01.",
+      february: "2023.03.01.",
+      march: "2023.04.03.",
+      april: "2023.05.02.",
+      may: "2023.06.01.",
+      june: "2023.07.03.",
+      july: "2023.08.01.",
+      august: "2023.09.01.",
+      september: "2023.10.02.",
+      october: "2023.11.02.",
+      november: "2023.12.01.",
+      december: "2024.01.03.",
+    };
     const thisDateObj = new Date(this.date);
 
-    return new Date(elsoMunkanapok2023[thisDateObj.toLocaleString('en-US',{month:'long'}).toLowerCase()]); 
+    return new Date(
+      elsoMunkanapok2023[
+        thisDateObj.toLocaleString("en-US", { month: "long" }).toLowerCase()
+      ]
+    );
   }
-  
+
   get koviHonapElsoMunkanap_eredeti() {
     const jovoHonapElsoNapja = (thisDotDate) => {
       return (
         thisDotDate.getFullYear() +
         "." +
-        (thisDotDate.getMonth() + 2 > 11 ? 1 : thisDotDate.getMonth()+2) +
+        (thisDotDate.getMonth() + 2 > 11 ? 1 : thisDotDate.getMonth() + 2) +
         "." +
         "1"
       );
@@ -2280,7 +2324,7 @@ class MuNyiTemplate {
     let dayToTry = new Date(jovoHonapElsoNapja(this.date));
 
     const okDay = (day) => {
-      if (!this.sortingFunctions.kivetelTalalo(day,true)) {
+      if (!this.sortingFunctions.kivetelTalalo(day, true)) {
         return;
       } else {
         dayToTry = new Date(
@@ -2300,13 +2344,14 @@ class MuNyiTemplate {
   sortingFunctions = {
     dinamikusMunyiSorList: [],
 
-    kivetelTalalo(dateObj,isNextMonth = false) {
+    kivetelTalalo(dateObj, isNextMonth = false) {
       const currentDate = dateObj;
       let toReturn = false;
-      const savedExceptions = GlobalFunctions.loadFromLocalStorage()[
-        "Munyi-Generator-kivetelek"
-      ]
-      let exceptionsToTest = isNextMonth? savedExceptions.concat(exceptions) : savedExceptions;
+      const savedExceptions =
+        GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
+      let exceptionsToTest = isNextMonth
+        ? savedExceptions.concat(exceptions)
+        : savedExceptions;
       console.error(exceptionsToTest);
 
       exceptionsToTest.forEach((kivetelArr) => {
@@ -2331,6 +2376,49 @@ class MuNyiTemplate {
       }
       return toReturn;
     },
+
+    kikuldetesTester(dateObj){
+      const currentDate = dateObj;
+      const exceptionsToTest =
+        GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
+      let arrayToReduce =[];
+        
+        exceptionsToTest.forEach((kivetelArr) => {
+          if (
+            currentDate.toLocaleString("hu-HU", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }) ==
+            new Date(kivetelArr[0]).toLocaleString("hu-HU", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })
+          ) {
+            //Megtaláltuk az aktuális dátumot a kivételek között
+            if(kivetelArr[2]=="kinti óra ledolgozása"){
+              const weekdayStr = GlobalFunctions.nameFormatter(currentDate.toLocaleString('hu-HU',{weekday:'long'}));
+              const helyszin = kivetelArr[1].split(' óra ')[1];
+              console.log(
+                "orarend nap kötelező órája (ezt kell végigvizsgálni helyszin-t keresve): ",helyszin,
+              GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"][weekdayStr].kotelezoOra
+              );
+              const arrayToSearch = GlobalFunctions.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"][weekdayStr].kotelezoOra;
+              arrayToSearch.forEach((item)=>{
+                if(item[1] == helyszin){
+                  arrayToReduce.push(item);
+                }
+              })
+              console.error(arrayToReduce);
+            }
+          }
+        });
+        return arrayToReduce.reduce((accu,actu)=>{
+          let toReturn = actu[4]? accu + +actu[0] : accu;
+          return toReturn;
+        },0);
+      },
 
     iterateDates: () => {
       const startDate = new Date(this.date);
@@ -2773,7 +2861,6 @@ class PrintLister {
     this.active = false;
   }
 
-
   get allAvailableTeljesitesiList() {
     this.allTeljesitesiCollector();
 
@@ -2845,7 +2932,7 @@ class PrintLister {
     printBtn.innerHTML = "Nyomtatás<br/>🖨️";
     printBtn.addEventListener("click", () => {
       previewFn();
-      
+
       window.print();
     });
     return printBtn;
@@ -2920,10 +3007,12 @@ class PrintLister {
           GlobalFunctions.nameFormatter(this.parentObject.BasicDataForm.name)
         ]
       );
-      
+
       allDatesArr.forEach((date) => {
-        let selectedFlag ='';
-        if(date == this.parentObject.BasicDataForm.date){selectedFlag = 'selected';}
+        let selectedFlag = "";
+        if (date == this.parentObject.BasicDataForm.date) {
+          selectedFlag = "selected";
+        }
         selectElement.innerHTML += `<option value="${date}" ${selectedFlag}>${date}</option>`;
       });
 
@@ -3075,28 +3164,44 @@ class PrintLister {
     this.orarendRowEqualizer();
   }
 
-  orarendRowEqualizer(){
+  orarendRowEqualizer() {
     let allRowsHeight = 330;
-   
+
     let x = 0;
-    while(document.getElementsByClassName(`sor-${x}`)[0]){
+    while (document.getElementsByClassName(`sor-${x}`)[0]) {
       let maxHeight = 0;
-      for(let i = 0; i<document.getElementsByClassName(`sor-${x}`).length;i++)
-    {
-      if(document.getElementsByClassName(`sor-${x}`)[i].clientHeight>maxHeight){
-        maxHeight = document.getElementsByClassName(`sor-${x}`)[i].clientHeight;
+      for (
+        let i = 0;
+        i < document.getElementsByClassName(`sor-${x}`).length;
+        i++
+      ) {
+        if (
+          document.getElementsByClassName(`sor-${x}`)[i].clientHeight >
+          maxHeight
+        ) {
+          maxHeight = document.getElementsByClassName(`sor-${x}`)[i]
+            .clientHeight;
+        }
+        console.log(
+          "clientHight " +
+            x +
+            ". sor, " +
+            i +
+            ".dik eleme: " +
+            document.getElementsByClassName(`sor-${x}`)[i].clientHeight
+        );
       }
-      console.log('clientHight '+ x+ '. sor, '+i+'.dik eleme: '+ document.getElementsByClassName(`sor-${x}`)[i].clientHeight  )
+
+      if (maxHeight) {
+        const CSSrule = document.createElement("style");
+        CSSrule.innerHTML = `.sor-${x}{height:${maxHeight + 1}px;}`;
+        document.getElementById("documents-to-print").append(CSSrule);
+        console.log(
+          "VOLT SOR AMIT átméreteztünk: " + x + " erre: " + maxHeight
+        );
+      }
+      x++;
     }
-    
-    if(maxHeight){
-      const CSSrule = document.createElement('style');
-    CSSrule.innerHTML = `.sor-${x}{height:${maxHeight+1}px;}`;
-    document.getElementById('documents-to-print').append(CSSrule);
-    console.log('VOLT SOR AMIT átméreteztünk: '+x+' erre: '+ maxHeight);
-    }
-  x++;
-  }
     //return maxHeight;
   }
 

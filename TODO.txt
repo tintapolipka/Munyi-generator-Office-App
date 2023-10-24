@@ -1,3 +1,14 @@
 Ha a túlóra nem az utolsó óra aznap, akkor a munyiban nem jelenik meg.
 
 Különböző Oszlopszélesség CSS-el megoldható? Ha igen azt beállítani!
+
+Ha kiküldetés lenne, de pótoljuk az órát, akkor ne legyen "K"???
+    Eddig kész: * lehet kiküldetést beállítani az Órarendben, a foglalkozás array[4] eleme boolean
+                * az órarendNap-ban van kikuldetesSum -ami a kiküldetéssel töltött órákat számolja össze
+                  adott napra
+                * munyiTemplate > soringfunctions > kikuldetesTester megírva, ami az elmaradt kiküldetések
+                  óráit számolja össze adott napra 
+    Kell még:   ->  a dinamikusMunyisor-ban/ Máshol? kinyerjük a kivétel szövegéből a kivétel órát?         
+                ->  össze kell számolni, hogy hány kiküldetés óra van adott a dátumkor kivételben,
+                    és azt kivonni a kikuldetesSum-ból. 
+                
