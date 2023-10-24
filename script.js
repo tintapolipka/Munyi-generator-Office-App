@@ -1023,6 +1023,21 @@ class OrarendSablon {
     this.hetiHibaUzenet = document.createElement("p");
   }
 
+  elsoMunkanapok2023 = [
+    "2023.01.02.",
+    "2023.02.01.",
+    "2023.03.01.",
+    "2023.04.03.",
+    "2023.05.02.",
+    "2023.06.01.",
+    "2023.07.03.",
+    "2023.08.01.",
+    "2023.09.01.",
+    "2023.10.02.",
+    "2023.11.02.",
+    "2023.12.01.",
+  ];
+
   dateSelectGenerator() {
     const selectElement = document.createElement("select");
     const allDatesArr = Object.keys(
@@ -1146,10 +1161,9 @@ class OrarendSablon {
     const footer = document.createElement("footer");
     footer.classList.add("orarend-lablec");
     footer.classList.add("oldal-tores");
-    footer.innerHTML = `<div class="orarend-keltezes">Makó, ${this.dateObj.toLocaleString(
-      "hu-HU",
-      { month: "numeric", year: "numeric", day: "numeric" }
-    )}</div>
+    footer.innerHTML = `<div class="orarend-keltezes">Makó, ${
+      this.elsoMunkanapok2023[this.dateObj.getMonth()]
+      }</div>
     <div class="alairasok">
         <div id="orarend-alairas-igazgato" class="orarend-alairas">igazgató</div>
         <div class="orarend-pecset-helye">P.H</div>
