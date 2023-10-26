@@ -482,7 +482,7 @@ class OrarendFoglalkozas {
       this.foglalkozasTulora ? "<br /> túlóra" : ""
     }
     ${
-      this.foglalkozasKikuldetes ? "<br /> kiküldetés" : ""
+      this.foglalkozasKikuldetes ? `<br /> <span class="notToPrint">kiküldetés</span>` : ""
     }
     </div>`;
   }
@@ -755,9 +755,10 @@ class OrarendNap {
         ? `¤ a kötelező órák száma nem lehet kevesebb 3 óránál! Kivétel: fél álláshely esetén (11 heti kötelező óra), vagy vezetői pozíció lehet.\n`
         : "";
 
-if((this.kikuldetesSum && this.foglalkozasutazas != "K")||(this.kikuldetesSum && this.foglalkozasutazas != "M/K")){
-  hibaUzenet += '¤ Van kiküldetésként megjelölt kötelező óra, de az utazás típusa mégsem M, vagy M/K!\n';
+if(this.kikuldetesSum && (this.foglalkozasutazas != "K" && this.foglalkozasutazas != "M/K")){
+  hibaUzenet += `¤ Van kiküldetésként megjelölt kötelező óra, de az utazás típusa mégsem "K", vagy "M/K"!\n`;
 }
+
 
     if (
       (this.foglalkozasutazas == "K" || this.foglalkozasutazas == "M/K" || this.kikuldetesSum) &&

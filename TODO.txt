@@ -1,4 +1,6 @@
-Ha a túlóra nem az utolsó óra aznap, akkor a munyiban nem jelenik meg. KÉSZ
+A nyomtatási képen szerepel a kiküldetés szó; KÉSZ
+
+
 
 Különböző Oszlopszélesség CSS-el megoldható? Ha igen azt beállítani!
 
