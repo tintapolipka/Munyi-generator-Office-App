@@ -85,12 +85,16 @@ text-align: center;
   font-weight: bold;
   border-top: 1.5px solid black;
   border-bottom: 1.5px solid black;
-  border-left: 1.5px solid black;
+  /* border-left: 1.5px solid black; */
   font-size: 11pt;
   text-align: center;
 }
 
-.het-napja:last-of-type{
+.grey-background{
+    background-color: gray;
+}
+
+.het-napja:last-of-type .helyszin-oszlop{
     border-right: 1.5px solid black;  
 }
 
@@ -125,7 +129,7 @@ text-align: center;
   display: block;
   width: 40%;
   border-right: 1.5px solid black;
-  /*line-height: 49.5pt;*/
+  border-left: 1.5px solid black;
 }
 
 .idopont-oszlop input{

@@ -1,6 +1,10 @@
-A nyomtatási képen szerepel a kiküldetés szó; KÉSZ
 
-
+Ha több sor kell az órarendbe, mint amennyi van, akkor szúrjunk be minden más sorba is egyet
+(Ne legyen a max csk 5)
+  Ami kell még: * Az Orarendhet-nek legyen egy funkciója, ami kiszámolja a legnagyobb oszlop-
+                  magaságot. (get maxColumnHeight) kész
+                * A maxColumnHeight-ot érje el az órarendnap, és az alapján állítsa be, hogy 
+                  hány cellát kell még beszúrnia alulra
 
 Különböző Oszlopszélesség CSS-el megoldható? Ha igen azt beállítani!
 
@@ -11,3 +15,49 @@ Ha kiküldetés lenne, de pótoljuk az órát, akkor ne legyen "K"???
                 * munyiTemplate > soringfunctions > kikuldetesTester megírva, ami az elmaradt kiküldetések
                   óráit számolja össze adott napra  
 KÉSZ                
+
+Ha túlóra elmarad, az nem jelenik meg a BELSŐ teljesítési igazolásban! KÉSZ
+
+TeljesitesSelectMenu CLASS
+function dateMerger(array) -Itt zömítjük a belső teljesítési stringjét, ezért később 
+már nem tudjuk, hogy a .tulora címke értéke melyik órára vonatkozik. 
+=>NEM itt kell a túlórának minősülő intézményi órát kihagyni, mert azt mát előre beleírtuk
+ a dateMerger-be küldött array-be. Argumentumként a currentrawData adatot kapja, amit a 
+this.rawData() merítőfunkció szolgáltat, és a Memu class-ból érkezik a TeljesitesSelectMenu
+class konstruktorának küldött callback funkcióval.
+
+Menu CLASS
+teljesitesiData() funkció, nem összekeverendő a sortingFunctions.teljesitesiData objektummal,
+  ami tartalmazza a helyszínek szerint szétválogatott alkalmakat.
+A Menu CLASS / sortingFunctions / kivetelTartalma: (dateString)-ben:
+Itt kell a túlórának minősülő intézményi órát kihagyni a belső teljesítésiről úgy, hogy fel-
+tételül szabjuk, hogy ha true a foglalkozás tömbjének túlórára vonatkozó (3.) eleme, akkor
+nem kell bele küldeni.
+if(!kivetel[3])
+
+Ha túlóra elmarad, az nem jelenik meg a KÜLSŐ teljesítési igazolásban sem! KÉSZ
+A Menu CLASS / sortingFunctions / kivetelTartalma: (dateString)-ben:
+if(!kivetel[3])- így nem kerül bele az intézményi óra jelzés a pótolt óra napján a külső,
+teljesítésibe, de ettől még órarendszerűen belekerül, mintha el se maradt volna.
+
+A Menu CLASS / sortingFunctions / iterateDates
+Csak akkor akarjuk végignézni a kivételeket, ha "kinti óra ledolgozása" van, ezért ide kell 
+beírni, és true-nak kell lennie a második argumentumnak a helyszinListazo()-ban:
+if (kivetel && kivetel[2] == "kinti óra ledolgozása") {
+          this.sortingFunctions.helyszinListazo(dateString, true);
+        }
+
+ GlobalFunctions.potoltOraCollector(dateObj)- minden elemét összehasonlítja az órarend
+ szerinti órákkal, és ha azonosat talál, ahol még a túlora (2.elem) is true, akkor azt
+ kihagyja a felsorolásból.  
+
+Ha elmarad egy túlóra, akkor ne szerepeljen a MUNYI-ban se.
+  A MunyiTemplate > sortingFunctions > tuloraAznap -ba sikerült beleírni, hogy ne
+  minősüljön túlórának ami elmaradt, de ekkor meg kikerült a túlórából és mejelent a
+  bal oldalon kötelező órákként.
+  EZÉRT létrehoztam a MunyiTemplate > sortingFunctions > iterateDates-en belül az 
+  elmaradtTuloraSum(datumObj,relevansFoglalkozasArr)- funkciót, ami visszadja az aznap
+  elmaradt túlórák számát. Ezt azután kivonjuk a kötelezőórából (ha nem maradt el, akkor 
+  mindet, ha elmaradt)
+
+

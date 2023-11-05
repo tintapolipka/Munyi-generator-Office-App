@@ -1,0 +1,95 @@
+*{
+    box-sizing: border-box;
+}
+.tulmunka-elszamolas-fejlec{
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+}
+.tulmunka-elszamolas-fejlec p{
+    margin: 0;}
+
+.tulmunka-elszamolas{
+    font-size: 20pt;
+   
+}
+
+.CSCSVPSZ{
+    font-size: 16pt;
+}
+.dolgozoneve-NEV-evHonap{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 5pt 0 15pt 0;
+}
+
+.tulmunka-dolgozoNeve{
+    font-size: 12pt;
+    width: 16%;
+    text-align: left;
+}
+.tulmunka-NEV{
+    font-weight: 400;
+    vertical-align: baseline;
+    font-size: 16pt;
+    width: 54%;
+    text-align: left;
+    
+}
+.tulmunka-evHonap{
+    font-size: 16pt;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: baseline;
+    width: 30%;
+}
+
+.tulmunka-elszamolas-tablazat{
+border-collapse: collapse;
+}
+
+.tulmunka-elszamolas-tablazat  td{
+    border: 1pt solid black;
+}
+
+
+.tulmunka-elszamolas-tablazat tr{
+    min-height: 100pt;
+}
+
+.tulmunka-elszamolas-tablazat-fejlec{
+    font-weight: bold;
+    border-bottom: 1.5pt;
+}
+
+.datum-oszlop{
+    width:8%;
+    text-align: center;
+}
+.erkezes-oszlop{
+    width: 8%;
+    text-align: center;
+}
+
+.tavozas-oszolp{
+    width: 7%;
+    text-align: center;
+}
+
+.megtartott-orak-szama-oszlop{
+    text-align: center;
+    width:10%;
+}
+
+.feladatellatasi-hely-oszlop{
+    width: 37%;
+    padding:0 1pt;
+}
+
+.dolgozo-es-igazolo-alairasa-oszlop{
+    width: 15%;
+    text-align: center;
+    height: 35px;
+}

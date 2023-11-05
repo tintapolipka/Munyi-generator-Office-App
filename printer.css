@@ -83,5 +83,12 @@
     flex-direction: row;
     flex-wrap: nowrap;
     width: 225mm;
+}
 
+.orarend-oldal-tores-alkalom{
+    border-top: 1.5px solid black;
+    border-bottom: 1.5px solid black;
+    border-left: 0;
+    border-right: 0;
+    height: 300px;
 }

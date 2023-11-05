@@ -155,4 +155,44 @@ class GlobalFunctions {
     localStorage["Munyi-generator"] = JSON.stringify(munyiData);
     return true;
   }
+
+  static potoltOraCollector(dateObj){
+    const currentDate = dateObj;
+    const exceptionsToTest =
+      this.loadFromLocalStorage()["Munyi-Generator-kivetelek"];
+    let arrayToReduce =[];
+      
+      exceptionsToTest.forEach((kivetelArr) => {
+        
+        if (
+          currentDate.toLocaleString("hu-HU", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          }) ==
+          new Date(kivetelArr[0]).toLocaleString("hu-HU", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          })
+        ) {
+          //Megtaláltuk az aktuális dátumot a kivételek között
+          if(kivetelArr[2]=="kinti óra ledolgozása"){
+            const weekdayStr = this.nameFormatter(currentDate.toLocaleString('hu-HU',{weekday:'long'}));
+            const helyszin = kivetelArr[1].split(' óra ')[1];
+            
+            const arrayToSearch = this.loadFromLocalStorage()["Munyi-Generator-heti-foglalkozasok"][weekdayStr].kotelezoOra;
+            arrayToSearch.forEach((item)=>{
+              if(item[1] == helyszin){
+                arrayToReduce.push(item);
+              }
+            })
+          }
+        }
+      });
+      
+      return arrayToReduce;
+      
+    }
+    
 }
