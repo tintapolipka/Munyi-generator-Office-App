@@ -65,4 +65,8 @@ A Túlmmunka elszámolás implementálása
     * az OrarendFoglalkozas  class-ban, mikor új foglalkozást viszünk fel, akkor egy prompt
       rákérdez, hogy hány órától van az óra. Ennek értéke az OrarendFoglalkozas.tuloraKezdete
       változóban kerül mentésre.
+    * amikor mentjük az új OrarendFoglalkozas-t, akkor a this.tuloraCheckBox.checked és 
+      a this.tuloraKezdete együtt kell szerepeljen, és már nem boolean-t adunk be, hanem ha
+      volt túlóra, akkor a this.foglalkozasTulora értéke az időpont lesz, ami szintén truthy
+      így elvileg ugyanúgy működik, mind eddig tette, a mentésnél és feldolgozásnál is.
 

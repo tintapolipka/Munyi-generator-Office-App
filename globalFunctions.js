@@ -4,6 +4,27 @@ class GlobalFunctions {
     return JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
   }
 
+  static departureString(string,hours=1){
+    let array;
+    const stringArray = string.split(':');
+    console.log('stringArray: ',stringArray, 'length: ',stringArray.length)
+    if(stringArray.length == 2){
+      array = stringArray;
+    } else if(string.match(/\d/g).length >3){
+      array = [string.match(/\d{2}/g)[0], string.match(/\d{2}/g)[1]];
+    } else {
+      alert('Nem megfelelő óra formátum! Próbáld így: "óra:perc"! pl.: "14:30"')
+      return;
+    }
+    console.log('array: ',array)
+
+    const depHour = +array[0] + hours < 10? 
+      '0' + (+array[0] + hours) :
+      +array[0] + hours;
+    return depHour + ':' + (+array[1]<10? '0'+array[1]: array[1]);
+  }
+
+
   static instituteExtractor(institute_str){
     return institute_str.split(/\d{4}/)[0].trim().match(/.+[^,;]/)[0];
   }

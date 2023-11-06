@@ -461,7 +461,7 @@ class OrarendFoglalkozas {
     } else {
       this.idopontInput.classList.add("adatHiany");
     }
-    this.foglalkozasTulora = this.tuloraCheckBox.checked;
+    this.foglalkozasTulora = this.tuloraCheckBox.checked && this.tuloraKezdete? this.tuloraKezdete: false;
     this.foglalkozasKikuldetes = this.kikuldetesCheckbox.checked;
     this.render;
   }
@@ -2087,7 +2087,9 @@ class Menu {
           this.sortingFunctions.helyszinListazo(dateString, true);
         }
         //szortírozás órarend szerint
-        else {
+        else if(kivetel){
+          console.log("Kihagytam a kövi dátumot: ",dateString)
+        } else {
           //console.log("szortírozás órarend szerint:", currentDate);
           this.sortingFunctions.helyszinListazo(dateString);
         }
@@ -3409,10 +3411,6 @@ get template(){
 }
 
 
-//////////////////TESZTELÉS:
-let m = new Menu();
-m.append();
-
 class TmunkaSor{
   constructor(date,arrival,hours,location){
     this.date = date.toLocaleDateString();
@@ -3451,3 +3449,8 @@ class TmunkaSor{
     document.getElementById('root').append(this.render); 
   }
 }
+
+//////////////////TESZTELÉS:
+let m = new Menu();
+m.append();
+
