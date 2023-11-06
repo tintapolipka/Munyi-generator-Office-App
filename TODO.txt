@@ -58,6 +58,11 @@ Ha elmarad egy túlóra, akkor ne szerepeljen a MUNYI-ban se.
   EZÉRT létrehoztam a MunyiTemplate > sortingFunctions > iterateDates-en belül az 
   elmaradtTuloraSum(datumObj,relevansFoglalkozasArr)- funkciót, ami visszadja az aznap
   elmaradt túlórák számát. Ezt azután kivonjuk a kötelezőórából (ha nem maradt el, akkor 
-  mindet, ha elmaradt)
+  mindet, ha elmaradt) KÉSZ
 
+A Túlmmunka elszámolás implementálása
+  Eddig kész:
+    * az OrarendFoglalkozas  class-ban, mikor új foglalkozást viszünk fel, akkor egy prompt
+      rákérdez, hogy hány órától van az óra. Ennek értéke az OrarendFoglalkozas.tuloraKezdete
+      változóban kerül mentésre.
 

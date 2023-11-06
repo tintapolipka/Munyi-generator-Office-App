@@ -384,7 +384,8 @@ class OrarendFoglalkozas {
     this.alapfeladat = alapfeladat;
     this.index = index;
     this.renderHeight;
-    ///TODO: renderHeight-t mérésének idejét kitalálni
+    
+    this.tuloraKezdete;
 
     this.idopontInput = this.createInput(`${this.id}-idopont`, "number");
     this.helyszinInput = this.createInput(
@@ -393,6 +394,13 @@ class OrarendFoglalkozas {
       "Helyszín"
     );
     this.tuloraCheckBox = this.createInput(`${this.id}-tulora`, "checkbox");
+    this.tuloraCheckBox.addEventListener('change',()=>{
+      if(!this.foglalkozasHelye && !this.foglalkozasIdeje && this.tuloraCheckBox.checked){
+        
+        this.tuloraKezdete = prompt('Mikor kezdődik az óra? (óra:perc)\n Pl.: 13:15');
+    }
+    })
+    
     this.kikuldetesCheckbox = this.createInput(
       `${this.id}-kikuldetes`,
       "checkbox"
@@ -863,7 +871,7 @@ class OrarendNap {
       sor.append(idopontOszlop);
       const helyszinOszlop = document.createElement("div");
       helyszinOszlop.classList = "orarend-adat helyszin-oszlop";
-            helyszinOszlop.append(`emptyI: ${emptyIndex}`)
+            
       sor.append(helyszinOszlop);
       if(maxColumnHeight>5 && emptyIndex == 6){
         
