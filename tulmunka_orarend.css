@@ -1,0 +1,63 @@
+#tulmunka-orarend{
+    padding: 2cm 1.5cm;
+}
+
+#tulmunka-orarend table td{
+    vertical-align: super;
+}
+
+#tulmunka-orarend-adatok-tablazat,.tulmunka-orarend-tablazat{
+    border-collapse: collapse;
+    border: 1pt solid black;
+    width: 100%;
+}
+
+#tulmunka-orarend-adatok-tablazat td,.tulmunka-orarend-tablazat td{
+    
+    border: 1pt solid black;
+    padding: 4pt;
+}
+.lightgrey-background{
+    background-color: lightgray;
+}
+.bold{
+    font-weight: bolder;
+}
+
+.tulmunka-orarend-datum-idopont-oszlop{
+    width: 95px;
+}
+.text-align-center{
+    text-align:center;
+}
+.width-20-percent{
+    width: 20%;
+}
+.tulmunka-orarend-hetnapja{
+    min-width: 15%;
+    max-width: 35%; 
+}
+
+#tulmunka-sor-kedd{
+    width:20%;
+}
+#tulmunka-orarend-igazgato-munkavallalo-foigazgato{
+    margin-top: 70px;
+    height: 80px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-style:italic;
+}
+
+.tulmunka-orarend-igazgato,.tulmunka-orarend-foigazgato{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.tulmunka-orarend-munkavallalo{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; 
+}

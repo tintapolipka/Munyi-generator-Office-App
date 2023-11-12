@@ -1,11 +1,6 @@
 *{
     box-sizing: border-box;
 }
-
-#tulmunka-elszamolas-container{
-    padding: 2cm 1.5cm;
-}
-
 .tulmunka-elszamolas-fejlec{
     font-weight: 700;
     line-height: 1.15;

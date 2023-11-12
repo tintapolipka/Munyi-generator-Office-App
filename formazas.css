@@ -164,6 +164,13 @@ nav{
 .rose-background{
     background-color: rgb(247, 140, 140) !important;
 }
+.orange-background{
+    background-color: rgb(255, 221, 129) !important;
+}
+.green-background{
+    background-color: rgb(113, 255, 100) !important;
+}
+
 .border-1pt-solid-black{
     border: 1pt solid black;
 }
@@ -172,3 +179,4 @@ nav{
     filter: blur(5px);
 }
 */
+

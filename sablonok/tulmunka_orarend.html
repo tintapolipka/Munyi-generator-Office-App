@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Túlmunka órarend</title>
+    <link rel="stylesheet" href="../Munyi-generator-Office-App/munyiForm.css" />
+    <link rel="stylesheet" href="../Munyi-generator-Office-App/orarend.css" />
+    <link
+      rel="stylesheet"
+      href="../Munyi-generator-Office-App/tulmunka_orarend.css"
+    />
+  </head>
+  <body>
+    <div id="tulmunka-orarend">
+      <!--dinamikus fejléc eleje-->
+      <p class="text-align-center bold">2023-2024. tanév</p>
+      <p class="text-align-center bold">Túlmunka órarend 2023. év 10. hónap</p>
+      <!--dinamikus fejléc vége-->
+      <!--adatok táblázat eleje-->
+      <table id="tulmunka-orarend-adatok-tablazat">
+        <tbody>
+          <tr class="lightgrey-background bold">
+            <td>A tagintézmény neve</td>
+            <td>Pedagógus neve</td>
+            <td>Feladatellátás</td>
+            <td>Elrendelt többletórák száma</td>
+            <td>Megjegyzés</td>
+          </tr>
+          <tr>
+            <td class="width-20-percent">
+              Csongrád-Csanád Vármegyei Pedagógiai Szakszolgálat Makói
+              Tagintézménye
+            </td>
+            <td>MAGOSI KRISZTINA</td>
+            <td>gyógytestnevelési ellátás</td>
+            <td>heti 6 óra</td>
+            <td>Üres álláshely terhére</td>
+          </tr>
+        </tbody>
+      </table>
+      <!--adatok táblázat vége-->
+      <br>
+      <!-- igazolandó órák táblázat eleje -->
+      <table class="tulmunka-orarend-tablazat">
+        <tbody>
+          <tr class="lightgrey-background text-align-center bold">
+            <td class="tulmunka-orarend-datum-idopont-oszlop">Dátum: időpont:</td>
+            <td id="tulmunka-sor-hetfo" class="tulmunka-orarend-hetnapja">Hétfő</td>
+            <td id="tulmunka-sor-kedd" class="tulmunka-orarend-hetnapja">Kedd</td>
+            <td class="tulmunka-orarend-hetnapja">Szerda</td>
+            <td class="tulmunka-orarend-hetnapja">Csütörtök</td>
+            <td class="tulmunka-orarend-hetnapja">Péntek</td>
+          </tr>
+        <!--dinamikus óra sorok kezdete-->
+          <tr class="dinamikus-tulmunka-orarend-sor">
+            <td>2023.10.03.
+                2023.10.10.
+                2023.10.17.
+                2023.10.24.
+                9:<sup>00</sup>-11:<sup>00<sup></td>
+            <td class="tulmunka-sor-hetfo"></td>
+            <td class="tulmunka-sor-kedd">Túlmunka<br>
+                tevékenység:<br>
+                (gyógytestnevelési<br>
+                ellátás)</td>
+            <td class="tulmunka-sor-szerda"></td>
+            <td class="tulmunka-sor-csutortok"></td>
+            <td class="tulmunka-sor-pentek"></td>
+          </tr>
+        <!--dinamikus óra sorok vége-->
+        </tbody>
+      </table>    
+      <!-- igazolandó órák táblázat vége -->
+
+      <!--Statikus lábléc kezdete-->
+      <div id="tulmunka-orarend-igazgato-munkavallalo-foigazgato">
+        <div class="tulmunka-orarend-igazgato">igazgató</div>
+        <div class="tulmunka-orarend-munkavallalo">munkavállaló</div>
+        <div class="tulmunka-orarend-foigazgato">igazgató</div>
+      </div>
+      <!--Statikus lábléc vége-->
+    </div>
+  </body>
+</html>

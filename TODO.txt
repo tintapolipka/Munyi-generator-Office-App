@@ -69,4 +69,23 @@ A Túlmmunka elszámolás implementálása
       a this.tuloraKezdete együtt kell szerepeljen, és már nem boolean-t adunk be, hanem ha
       volt túlóra, akkor a this.foglalkozasTulora értéke az időpont lesz, ami szintén truthy
       így elvileg ugyanúgy működik, mind eddig tette, a mentésnél és feldolgozásnál is.
+    * ki kell válogatni a megtartott túlórákat, amit a Menu / sortingFunctions / iterateDates-
+      ben hajtunk végre, ennek eredménye a Menu / sortingFunctions / tulMunkaData-ba kerül 
+    * Beletettem a nyomtatható teljesitesi igazolások közé
+  Ami kell még:
+
+Túlmunka Órarend implementálása
+  Eddig kész:
+   * A HTML sablon a dokumentumok mappa tulmunka_orarend.html-ben van.
+   * bekérni a következő adatokat: 
+    -megjegyzés (pl.: üres álláshely terhére) ezt az Orarendsablon.tuloraMegjegyzes-ben tárolom
+    -feladatellátás típusa (pl. gyógypedagógiai ellátás)
+    Ezt egy dialog modal segítségével teszem meg az OrarendFoglalkozas-ban.
+  Ami kell még:
+   A Printlister-be implementálni
+    
+Munkaközösségi implementálása
+  Kell olyan kivétel, hogy "egyedi kiküldetés", ami a [2]. eleme a mentett kivételnek.
+  Ha a kivétel típusa "egyedi kiküldetés", akkor a Munyi-ban kiküldetésnek kell lennie, és a
+  
 

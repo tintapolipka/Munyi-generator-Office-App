@@ -4,10 +4,18 @@ class GlobalFunctions {
     return JSON.parse(localStorage["Munyi-Generator-alapAdatok"]);
   }
 
+  static tanev(dateStr) {
+    const dateObj = new Date(dateStr)
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth();
+    return month < 8
+      ? `${year - 1}/${year}. tanév`
+      : `${year}/${year + 1}. tanév`;
+  }
+
   static departureString(string,hours=1){
     let array;
     const stringArray = string.split(':');
-    console.log('stringArray: ',stringArray, 'length: ',stringArray.length)
     if(stringArray.length == 2){
       array = stringArray;
     } else if(string.match(/\d/g).length >3){
@@ -16,12 +24,13 @@ class GlobalFunctions {
       alert('Nem megfelelő óra formátum! Próbáld így: "óra:perc"! pl.: "14:30"')
       return;
     }
-    console.log('array: ',array)
+    //console.log('array: ',array)
 
     const depHour = +array[0] + hours < 10? 
       '0' + (+array[0] + hours) :
       +array[0] + hours;
-    return depHour + ':' + (+array[1]<10? '0'+array[1]: array[1]);
+   
+    return depHour + ':' +  array[1];
   }
 
 
