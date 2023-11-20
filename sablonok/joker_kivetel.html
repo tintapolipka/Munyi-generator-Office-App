@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Joker kivétel dialóg</title>
+  </head>
+
+  <style>
+    .grey-background{
+      background-color: rgb(166, 166, 166);
+    }
+  </style>
+  <body>
+    <dialog id="custom-kivetel-dialog" open>
+      <h3>🃏 Egyedi kivétel:</h3>
+      <p>
+        FIGYELEM! Ezzel a kivétellel a MuNyi bármelyik sorát egyénire szabhatod.
+        Csak azokat az adatokat változtatod meg, amiket itt kitöltesz, a többi a
+        szabályoknak megfelelő marad. Alkalmas arra, hogy kiegészítsd pl.
+        kiküldetéssel az aznapi munkádat. Ha csak lehet, INKÁBB HASZNÁLJUK A
+        BEÉPÍTETT LEHETŐSÉGEKET!
+      </p>
+
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                Kötelező óra:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-kotelezoOra"
+                />
+              </td>
+              <td >
+                Távollét indoka:
+                <input type="text" placeholder="távollét indoka" id="tavolletIndoka"/>
+              </td>
+              <td>
+                Túlóra:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-tulora"
+                />
+              </td>
+              <td>
+                szakértői nap<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-szakertoi-nap"
+                />
+              </td>
+              <td >
+                utazási költségtérítés:
+                <select id="custom-kivetel-dialog-utazasi-koltseg-select">
+                  <option value="">nincs utazás</option>
+                  <option value="M">M</option>
+                  <option value="M/K">M/K</option>
+                  <option value="K">K</option>
+                </select>
+              </td>
+            </tr>
+
+            <tr id="custom-kivetel-dialog-kotelezo-oran-tuli" class="grey-background">
+              <td colspan="6">
+                Nem közvetlen foglalkozással töltött órák
+              </td>
+            </tr>
+            <tr>
+              <td>
+                közvetlen foglalkozások előkészítése:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-foglalkozasok-elokeszotese"
+                />
+              </td>
+              <td>
+                vélemények készítése:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-velemeny-iras"
+                />
+              </td>
+              <td>
+                fejlesztési tervek készítése:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-fejlesztesi-terv"
+                />
+              </td>
+              <td>
+                eseti helyettesítés:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-helyettesites"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                intézményi dokumentumok vezetése:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-intézményi-dokumentumok"
+                />
+              </td>
+              <td>
+                gyakornok mentorálása:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-mentoralas"
+                />
+              </td>
+              <td>
+                szakalkalmazotti, szakmai munkaközösségi értekezlet:<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-ertekezlet"
+                />
+              </td>
+              <td>
+                feladatvégzési helyek közötti utazás<input
+                  type="number"
+                  min="1"
+                  max="8"
+                  id="custom-kivetel-dialog-feladathelyek-utazas"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button>Kész</button>
+      
+    </dialog>
+  </body>
+</html>

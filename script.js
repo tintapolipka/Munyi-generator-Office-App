@@ -2747,19 +2747,19 @@ class DinamikusMunyiSor {
     utazasiKoltseg
   ) {
 
- /*
-  console.warn(
-        "beérkező: ",
-        "date: ",date,
-        "kotelezoOra: ",kotelezoOra,
-        "szabadOraObj: ",szabadOraObj,
-    "kivetel: ", kivetel,
-    "kivetelOk: ",kivetelOk,
-    "kivetelTipus: ",kivetelTipus,
-    "tulora: ",tulora,
-    "utazasiKoltseg: ",utazasiKoltseg
-      )
-   */ 
+ 
+  // console.warn(
+  //       "beérkező: ",
+  //       "date: ",date,
+  //       "kotelezoOra: ",kotelezoOra,
+  //       "szabadOraObj: ",szabadOraObj,
+  //   "kivetel: ", kivetel,
+  //   "kivetelOk: ",kivetelOk,
+  //   "kivetelTipus: ",kivetelTipus,
+  //   "tulora: ",tulora,
+  //   "utazasiKoltseg: ",utazasiKoltseg
+  //     )
+    
 
     this.date = new Date(date); //date obj
     this.kotelezoOra = kotelezoOra; //num
@@ -2767,7 +2767,7 @@ class DinamikusMunyiSor {
     this.kivetel = kivetel; //boolean
     this.kivetelOk = kivetelOk; //string
     this.tulora = tulora; //num
-    this.szabadOraObj = szabadOraObj; //{'1.':1,'3.':3,'4.':4,'6.':6, '8.':8, '10.':10, '11.':11, '14.':14, 'szakértői nap':100}
+    this.szabadOraObj = {...szabadOraObj}; //{'1.':1,'3.':3,'4.':4,'6.':6, '8.':8, '10.':10, '11.':11, '14.':14, 'szakértői nap':100}
     this.utazasiKoltseg = utazasiKoltseg; // 'M' | 'K' | 'M/K'
     this.szakertoiNapOra;
 
@@ -2859,7 +2859,9 @@ class DinamikusMunyiSor {
       {
           Object.keys(this.szabadOraObj).forEach(key =>{
               if(outputMinusInput>0){
+                console.log("outputMinusInput>0");
               while(this.szabadOraObj[key] && outputMinusInput){
+                console.log("this.szabadOraObj[key]: ",this.szabadOraObj[key])
                   this.szabadOraObj[key] = +this.szabadOraObj[key]++;
                   outputMinusInput--;
               }}
@@ -2886,10 +2888,10 @@ beerkezoSzabadora(szabadOraObj){
 
 
 munkaKozossegiDataTransform(){
-    this.szabadOraObj["8."] = +this.szabadOraObj["8."] + +this.szabadOraObj["11."];
+    this.szabadOraObj["8."] = (this.szabadOraObj["8."]? +this.szabadOraObj["8."] : 0) + (this.szabadOraObj["11."]? +this.szabadOraObj["11."]: 0);
     this.szabadOraObj["11."] = 0;
     this.szabadOraObj["11."] = this.kotelezoOra;
-    this.szabadOraObj["8."] = +this.szabadOraObj["8."] + +this.szabadOraObj["14."];
+    this.szabadOraObj["8."] = (this.szabadOraObj["8."]? +this.szabadOraObj["8."] : 0) + (this.szabadOraObj["14."]? +this.szabadOraObj["14."]: 0);
     this.szabadOraObj["14."] = 0;
     this.szabadOraObj["6."] = 0;
     this.szabadOraObj["14."] = 0;
@@ -3536,7 +3538,7 @@ class MuNyiTemplate {
   }
   get szabadOraHaviSumma() {
     return this.sortingFunctions.dinamikusMunyiSorList.reduce(
-      (accu, actu) => accu + actu.szabadOraSumma,
+      (accu, actu) => accu + +actu.szabadOraSumma,
       0
     );
   }
