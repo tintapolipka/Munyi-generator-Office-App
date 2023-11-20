@@ -3,7 +3,7 @@
 }
 
 #tulmunka-elszamolas-container{
-    padding: 2cm 1.5cm;
+    padding: 1.5cm 1.5cm;
 }
 
 .tulmunka-elszamolas-fejlec{
@@ -70,7 +70,7 @@ border-collapse: collapse;
 }
 
 .datum-oszlop{
-    width:8%;
+    width:10%;
     text-align: center;
 }
 .erkezes-oszlop{

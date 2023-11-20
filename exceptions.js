@@ -5,6 +5,7 @@ const exceptions = [
   ["2023-11-01", "ünnepnap", "tavollét"],
   ["2023-11-02", "szabadság", "tavollét"],
   ["2023-11-03", "szabadság", "tavollét"],
+  ["2023-11-13","munkaközösségi értekezlet","tavollét",false],
 
   ["2023-12-25", "ünnepnap", "tavollét"],
   ["2023-12-26", "ünnepnap", "tavollét"],

@@ -174,9 +174,17 @@ nav{
 .border-1pt-solid-black{
     border: 1pt solid black;
 }
-/*
-#statikus-fejlec header{
-    filter: blur(5px);
+
+#custom-kivetel-dialog table{
+    border: 1pt solid black;
+    border-collapse: collapse;
 }
-*/
+#custom-kivetel-dialog td{
+    border: 1pt solid black;
+}
+
+#tulmunka-lista-ervenyesseg-td{
+    border-color: white;
+    border-width: 0;
+}
 

@@ -73,6 +73,7 @@ A Túlmmunka elszámolás implementálása
       ben hajtunk végre, ennek eredménye a Menu / sortingFunctions / tulMunkaData-ba kerül 
     * Beletettem a nyomtatható teljesitesi igazolások közé
   Ami kell még:
+    * Vízszintes nyomtatásra kell átállítani!
 
 Túlmunka Órarend implementálása
   Eddig kész:
@@ -82,10 +83,24 @@ Túlmunka Órarend implementálása
     -feladatellátás típusa (pl. gyógypedagógiai ellátás)
     Ezt egy dialog modal segítségével teszem meg az OrarendFoglalkozas-ban.
   Ami kell még:
-   A Printlister-be implementálni
-    
+   
+BUG: 
+A külső teljesítésikben, ha két kötelező óra van azonos helyszínre, mert az egyik túlóra 
+(csak akkor? Tesztelni!), akkor csak az első kötelező óráját számolja, a Menu > 
+sortingFunctions > teljesitesiData-ban pedig false lesz helyette. Kiderült, hogy a 
+TeljesitesSelectMenu > listaGenerator > mergeSameDates(array)-ja csinálja ezt, csak nem 
+tudom miért... Feladat: Kideríteni, és megoldani, hogy egyesítse a kötelező órát, esetleg a
+stringet is. 
+
+
 Munkaközösségi implementálása
-  Kell olyan kivétel, hogy "egyedi kiküldetés", ami a [2]. eleme a mentett kivételnek.
-  Ha a kivétel típusa "egyedi kiküldetés", akkor a Munyi-ban kiküldetésnek kell lennie, és a
+  Eddig kész:
+  Van olyan kivétel típus, hogy "egyedi kiküldetés", ami a [2]. eleme a mentett kivételnek.
+  A kivétel tartalma ([1.] elem) egy objektum lesz a munyisor minden oszlopának megfelelő, 
+  módsítható tartalommal.
+  Annak érdekében, hogy kikületésesek is lehessenek, az egyedi kivételt kell használni
+  "munkaközösségi értekezlet" szöveggel és "K" vagy "M/K" opcióval.
+  
+  
   
 
