@@ -22,7 +22,7 @@ class BelsoTeljesitesi {
     */
 
     this.date =
-      typeof datesArray[0].date == "object"
+      typeof(datesArray[0].date) == "object"
         ? date
         : new Date(datesArray[0].date);
     this.node = document.createElement("div");
@@ -300,6 +300,7 @@ class teljesitesiTemplate {
         if(dateObj.string){
           dateObj.string = `munkarend átrendezés miatt ${dateObj.hours} óra intézményben ledolgozott óra` 
           dateObj.hours = -1*(+dateObj.hours);
+          dateObj.tulora = dateObj.tulora? dateObj.tulora : 0;
       }
         return dateObj;
     })
@@ -313,10 +314,17 @@ class teljesitesiTemplate {
     for (let i = 0; i < array.length; i++) {
       const currentDate = array[i]["date"];
       if (prevDate == currentDate) {
+        console.log(collectionObj[currentDate]);
         if(collectionObj[currentDate])
         { const hoursConst = collectionObj[currentDate]?
            +collectionObj[currentDate].hours + +array[i].hours:
            +array[i].hours;
+
+           console.log(Boolean(collectionObj[currentDate].tulora))
+
+           const tuloraConst = collectionObj[currentDate].tulora?
+            +collectionObj[currentDate].tulora + +array[i].hours:
+            array[i].tulora? +array[i].hours: 0;
   
           // Ha a van írva a .stringbe, kivonjuk az eddigi értékből a mostani értéket, ha ez
           // éri el a 0-t csak akkor tesszük be az adatsort
@@ -324,17 +332,31 @@ class teljesitesiTemplate {
          date: currentDate, 
           hours: hoursConst, 
           string: collectionObj[currentDate].string + ''+ array[i].string, 
-          tulora : collectionObj[currentDate].tulora,
+          tulora : tuloraConst,
         }}
-          else { collectionObj[currentDate]= array[i];
+          else { collectionObj[currentDate]= {...array[i]};
+                collectionObj[currentDate].tulora = 0;
+                console.log("else ág fut le",collectionObj[currentDate])
             }
-      } else {collectionObj[currentDate]= array[i];}
+      } else {
+        const arrayElemMasolat = {...array[i]}
+        arrayElemMasolat.tulora= arrayElemMasolat.tulora?
+        +arrayElemMasolat.hours:
+        0;
+        collectionObj[currentDate]= arrayElemMasolat;
+      
+
+      
+      }
+      console.log("collectionObj[currentDate].tulora: ",collectionObj[currentDate].tulora);
+      
       prevDate = currentDate;
+    
     }
     const toReturn = Object.keys(collectionObj).map(key =>{
         return collectionObj[key]
     })
-//console.log(toReturn)
+console.log(toReturn)
 return toReturn;
   }
 
@@ -1055,7 +1077,7 @@ class OrarendNap {
 
       sor.append(helyszinOszlop);
 
-      console.warn('this.parentObj.heighestColumnTextLength >350: ',this.parentObj.heighestColumnTextLength >350,this.parentObj.heighestColumnTextLength)
+   //   console.warn('this.parentObj.heighestColumnTextLength >350: ',this.parentObj.heighestColumnTextLength >350,this.parentObj.heighestColumnTextLength)
   
       if (this.parentObj.heighestColumnTextLength >350 && emptyIndex == 5) {
         const oldalToresDiv = document.createElement("div");
@@ -2826,7 +2848,9 @@ class DinamikusMunyiSor {
     }
 
     if(kivetelTipus == "custom kivétel")
-      {console.warn(
+      {
+        /*
+        console.warn(
         "Számított:",
         "this.date: ", this.date, //nem kell
     "this.kotelezoOra: ", this.kotelezoOra, // kész
@@ -2837,6 +2861,7 @@ class DinamikusMunyiSor {
     "this.tulora: ", this.tulora, // kész
     "this.utazasiKoltseg: ",this.utazasiKoltseg //kész
       )
+      */
     const customKivetelObj = this.kivetelOk;
     console.error(customKivetelObj)
     if(customKivetelObj.kotelezoOra){this.kotelezoOra = +customKivetelObj.kotelezoOra};
@@ -2852,6 +2877,7 @@ class DinamikusMunyiSor {
     if (this.kivetelOk == "munkaközösségi értekezlet") {
       this.munkaKozossegiDataTransform();
       if(customKivetelObj.szabadOra['14.']){this.szabadOraObj['14.'] = customKivetelObj.szabadOra['14.']}
+      if(customKivetelObj.munkabaJaras){this.utazasiKoltseg = customKivetelObj.munkabaJaras}
 
       let outputMinusInput = (this.szabadOraSumma - +kotelezoOra) - this.beerkezoSzabadora(szabadOraObj); 
       console.log(this.szabadOraSumma,+kotelezoOra,this.beerkezoSzabadora(szabadOraObj),"outputMinusInput: ",outputMinusInput)
@@ -2896,6 +2922,7 @@ munkaKozossegiDataTransform(){
     this.szabadOraObj["6."] = 0;
     this.szabadOraObj["14."] = 0;
     this.kotelezoOra = 0;
+    this.utazasiKoltseg ="";
     this.tulora = 0;
   }
 

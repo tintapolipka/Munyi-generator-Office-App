@@ -1,3 +1,9 @@
+TODO:
+Ha egy nap van ugyanott túlóra és sima kötelező óra, akkor a teljesítésibe azt írjuk:
+"(3 óra + 1 óra túlóra)".
+A TeljesitesSelectMenu > listaGenerator > mergeSameDates(datesArray) egyesíthetné a túlórákat is,
+Ekkor a legvégén kivonnánk az összes túlórát az összes órából, és annak függvényében írnánk 
+ki a mardék értékeket.
 
 Ha több sor kell az órarendbe, mint amennyi van, akkor szúrjunk be minden más sorba is egyet
 (Ne legyen a max csk 5)
@@ -90,7 +96,7 @@ A külső teljesítésikben, ha két kötelező óra van azonos helyszínre, mer
 sortingFunctions > teljesitesiData-ban pedig false lesz helyette. Kiderült, hogy a 
 TeljesitesSelectMenu > listaGenerator > mergeSameDates(array)-ja csinálja ezt, csak nem 
 tudom miért... Feladat: Kideríteni, és megoldani, hogy egyesítse a kötelező órát, esetleg a
-stringet is. 
+stringet is. KÉSZ
 
 
 Munkaközösségi implementálása
@@ -100,6 +106,9 @@ Munkaközösségi implementálása
   módsítható tartalommal.
   Annak érdekében, hogy kikületésesek is lehessenek, az egyedi kivételt kell használni
   "munkaközösségi értekezlet" szöveggel és "K" vagy "M/K" opcióval.
+  KÉSZ
+
+
   
   
   
