@@ -334,7 +334,9 @@ class teljesitesiTemplate {
           string: collectionObj[currentDate].string + ''+ array[i].string, 
           tulora : tuloraConst,
         }}
-          else { collectionObj[currentDate]= {...array[i]};
+          else { 
+            // ez elvileg sose fut le, mert már létezik eddigre collectionObj[currentDate]
+            collectionObj[currentDate]= {...array[i]};
                 collectionObj[currentDate].tulora = 0;
                 console.log("else ág fut le",collectionObj[currentDate])
             }
@@ -344,9 +346,7 @@ class teljesitesiTemplate {
         +arrayElemMasolat.hours:
         0;
         collectionObj[currentDate]= arrayElemMasolat;
-      
-
-      
+    
       }
       console.log("collectionObj[currentDate].tulora: ",collectionObj[currentDate].tulora);
       
@@ -431,8 +431,17 @@ return toReturn;
         toReturn += +dateObj["hours"]>0?
         `(${dateObj["hours"]} óra helyben megtartott és ${dateObj["string"]})`: 
         ` munkarend átrendezés miatt intézményi óra`;
-      } else {toReturn +=`(${dateObj["hours"]} óra)`;}
-       
+      } 
+       //Ide else if()-be az a feltétel, hogy van-e túlóra?
+      
+       else if(dateObj["tulora"]){ 
+        toReturn += `(${+dateObj["hours"]- +dateObj["tulora"]} óra és ${dateObj["tulora"]} túlóra)`
+        
+        }
+      
+
+      else {toReturn +=`(${dateObj["hours"]} óra)`;}
+      
       toReturn += `</p>`;
     });
 
