@@ -20,6 +20,7 @@ class BelsoTeljesitesi {
         { date: "2022.10.18", hours: 11 },
       ]
     */
+      console.error('datesArray:',datesArray)
 
     this.date =
       typeof(datesArray[0].date) == "object"
@@ -99,6 +100,13 @@ class BelsoTeljesitesi {
       }
       lastWeekDay = currentDate.getDay();
 
+      // innen a munkaközösségi értekezlet implementálása
+      if(/munkaközösségi értekezlet/.test(dateObj.string)){
+              
+        toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>munkaközösségi értekezlet</p>`
+      // idáig munkaközösségi értekezlet implementálása
+      } else {
+      
       toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>${dateObj["hours"]} óra`;
 
       if (dateObj.string.match(/\d óra/g)) {
@@ -116,6 +124,9 @@ class BelsoTeljesitesi {
       }
 
       toReturn += `</p>`;
+    }
+  
+    
     });
 
     return toReturn;
@@ -433,14 +444,9 @@ return toReturn;
         ` munkarend átrendezés miatt intézményi óra`;
       } 
        //Ide else if()-be az a feltétel, hogy van-e túlóra?
-      
-       else if(dateObj["tulora"]){ 
-        toReturn += `(${+dateObj["hours"]- +dateObj["tulora"]} óra és ${dateObj["tulora"]} túlóra)`
-        
-        }
-      
-
-      else {toReturn +=`(${dateObj["hours"]} óra)`;}
+      else if(dateObj["tulora"]){ 
+        toReturn += `(${+dateObj["hours"]- +dateObj["tulora"]} óra és ${dateObj["tulora"]} túlóra)`;
+        } else {toReturn +=`(${dateObj["hours"]} óra)`;}
       
       toReturn += `</p>`;
     });
@@ -2612,9 +2618,15 @@ class Menu {
           this.sortingFunctions.helyszinListazo(dateString, true);
         }
         //szortírozás órarend szerint
-        else if(kivetel && kivetel[2] == "custom kivétel"){
-          
+        else if(kivetel && kivetel[2] == "custom kivétel" && kivetel[1].tavolletIndoka != "munkaközösségi értekezlet"){
+       
           this.sortingFunctions.helyszinListazo(dateString);
+        }
+        else if (kivetel && kivetel[1] == "munkaközösségi értekezlet" ||
+                (kivetel && kivetel[1]?.tavolletIndoka == "munkaközösségi értekezlet")
+        ) {
+          this.sortingFunctions.helyszinListazo(dateString);
+          
         }
         else if (kivetel) {
           //console.log("Kihagytam a kövi dátumot: ",dateString)
@@ -2648,6 +2660,25 @@ class Menu {
       kivetelLista.forEach((kivetel) => {
         if (kivetel[0] == dateString) {
           // Itt lehet csinálni valamit a találattal
+          // innen a munkaközösségi kivétel
+          if(kivetel[1] == "munkaközösségi értekezlet" ||
+              typeof(kivetel[1]) == 'object' && kivetel[1]?.tavolletIndoka == "munkaközösségi értekezlet"
+          ){
+            if (!this.sortingFunctions.teljesitesiData["CSCSVPSZ"]) {
+            this.sortingFunctions.teljesitesiData["CSCSVPSZ"] = [];
+          } else {
+            //alert('LEFUT');
+              this.sortingFunctions.teljesitesiData["CSCSVPSZ"].push({
+                date: kivetel[0],
+                hours: 100,
+                string: "munkaközösségi értekezlet",
+                tulora: 0,
+              });
+             
+          }
+        } else
+        // idáig a munkaközösségi kivétel 
+        
           if (kivetel[2] == "kinti óra ledolgozása") {
             if (!this.sortingFunctions.teljesitesiData["CSCSVPSZ"]) {
               this.sortingFunctions.teljesitesiData["CSCSVPSZ"] = [];

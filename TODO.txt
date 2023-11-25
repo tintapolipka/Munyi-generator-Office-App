@@ -3,7 +3,7 @@ Ha egy nap van ugyanott túlóra és sima kötelező óra, akkor a teljesítési
 "(3 óra + 1 óra túlóra)".
 A TeljesitesSelectMenu > listaGenerator > mergeSameDates(datesArray) egyesíthetné a túlórákat is,
 Ekkor a legvégén kivonnánk az összes túlórát az összes órából, és annak függvényében írnánk 
-ki a mardék értékeket.
+ki a mardék értékeket. KÉSZ
 
 Ha több sor kell az órarendbe, mint amennyi van, akkor szúrjunk be minden más sorba is egyet
 (Ne legyen a max csk 5)
@@ -80,6 +80,7 @@ A Túlmmunka elszámolás implementálása
     * Beletettem a nyomtatható teljesitesi igazolások közé
   Ami kell még:
     * Vízszintes nyomtatásra kell átállítani!
+    KÉSZ
 
 Túlmunka Órarend implementálása
   Eddig kész:
@@ -106,6 +107,8 @@ Munkaközösségi implementálása
   módsítható tartalommal.
   Annak érdekében, hogy kikületésesek is lehessenek, az egyedi kivételt kell használni
   "munkaközösségi értekezlet" szöveggel és "K" vagy "M/K" opcióval.
+  Legyen a teljesítésikben, hogy munkarend átrendezés miatt intézmény óra.
+  
   KÉSZ
 
 
