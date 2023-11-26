@@ -112,7 +112,10 @@ Munkaközösségi implementálása
   KÉSZ
 
 
-  
+ BUG:
+ Ha új embert vittem föl a munkaközösségi-s verzióban, akkor nem kapott adatot a 
+ belső teljesítési, ezért lefagyott.
+
   
   
 

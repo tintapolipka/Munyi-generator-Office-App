@@ -21,11 +21,11 @@ class BelsoTeljesitesi {
       ]
     */
       console.error('datesArray:',datesArray)
-
-    this.date =
-      typeof(datesArray[0].date) == "object"
-        ? date
+    
+    this.date = typeof(datesArray[0]?.date) == "object"
+        ? datesArray[0].date
         : new Date(datesArray[0].date);
+  
     this.node = document.createElement("div");
   }
 
@@ -210,12 +210,15 @@ class TeljesitesSelectMenu {
           }
           return arrToReturn;
         }
-        templateXXX = new BelsoTeljesitesi(
+        if(currentrawData[key].length)
+        {templateXXX = new BelsoTeljesitesi(
           dateMerger(currentrawData[key]),
           index,
           key
         );
-        this.teljesitesiLista.push(templateXXX);
+        
+        this.teljesitesiLista.push(templateXXX);}
+      
       } else {
         
 
@@ -248,7 +251,8 @@ class TeljesitesSelectMenu {
         );
         this.teljesitesiLista.push(templateXXX);
       }
-      nodeToReturn.append(templateXXX.render);
+      if(templateXXX)
+      {nodeToReturn.append(templateXXX.render);}
     });
 
     return nodeToReturn;
