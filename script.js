@@ -20,7 +20,6 @@ class BelsoTeljesitesi {
         { date: "2022.10.18", hours: 11 },
       ]
     */
-      console.error('datesArray:',datesArray)
     
     this.date = typeof(datesArray[0]?.date) == "object"
         ? datesArray[0].date
@@ -284,6 +283,8 @@ class teljesitesiTemplate {
   constructor(datesArray, index, place) {
     this.active = false;
 
+    console.error('datesArray:',datesArray)
+
     this.name = JSON.parse(localStorage["Munyi-Generator-alapAdatok"])["name"];
     this.job = JSON.parse(localStorage["Munyi-Generator-alapAdatok"])[
       "munkakor"
@@ -312,8 +313,9 @@ class teljesitesiTemplate {
 
   convertExceptionHours(datesArray) {
     return datesArray.map(dateObj => {
-        if(dateObj.string){
-          dateObj.string = `munkarend átrendezés miatt ${dateObj.hours} óra intézményben ledolgozott óra` 
+      if(dateObj.string){
+        console.warn("dateObj.string :",dateObj.string,dateObj.date, "munaközösségi? ",  /munkaközösségi/.test(dateObj.string));  
+          dateObj.string = /munkaközösségi/.test(dateObj.string)? "munkaközösségi értekezlet" : `munkarend átrendezés miatt ${dateObj.hours} óra intézményben ledolgozott óra` 
           dateObj.hours = -1*(+dateObj.hours);
           dateObj.tulora = dateObj.tulora? dateObj.tulora : 0;
       }
@@ -440,8 +442,14 @@ return toReturn;
       }
       lastWeekDay = currentDate.getDay();
 
+        //ha volt munkaközösségi
+      if(/munkaközösségi/.test(dateObj["string"])){
+        toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>munkaközösségi értekezlet</p>`
+      } else {
+        //ha nem munkaközösségi volt
       toReturn += `<p><span id="datum-${this.index}-${index}">${currentDateStr} </span>`;
-      
+  
+
       if(dateObj["string"]){
         toReturn += +dateObj["hours"]>0?
         `(${dateObj["hours"]} óra helyben megtartott és ${dateObj["string"]})`: 
@@ -453,6 +461,7 @@ return toReturn;
         } else {toReturn +=`(${dateObj["hours"]} óra)`;}
       
       toReturn += `</p>`;
+      }
     });
 
     return toReturn;
@@ -2629,7 +2638,7 @@ class Menu {
         else if (kivetel && kivetel[1] == "munkaközösségi értekezlet" ||
                 (kivetel && kivetel[1]?.tavolletIndoka == "munkaközösségi értekezlet")
         ) {
-          this.sortingFunctions.helyszinListazo(dateString);
+          this.sortingFunctions.helyszinListazo(dateString,false,true);
           
         }
         else if (kivetel) {
@@ -2671,7 +2680,6 @@ class Menu {
             if (!this.sortingFunctions.teljesitesiData["CSCSVPSZ"]) {
             this.sortingFunctions.teljesitesiData["CSCSVPSZ"] = [];
           } else {
-            //alert('LEFUT');
               this.sortingFunctions.teljesitesiData["CSCSVPSZ"].push({
                 date: kivetel[0],
                 hours: 100,
@@ -2727,7 +2735,7 @@ class Menu {
       return toReturn;
     },
 
-    helyszinListazo: (datum_str, tuloraKivetel = false) => {
+    helyszinListazo: (datum_str, tuloraKivetel = false, munkaKozossegiKivetel = false) => {
       let nap = GlobalFunctions.weekDayString(datum_str);
 
       if (nap == "szombat" || nap == "vasarnap") {
@@ -2767,14 +2775,14 @@ class Menu {
           ? objToReturn[foglalkozas[1]].push({
               date: datum_str,
               hours: foglalkozas[0],
-              string: foglalkozas[3],
+              string: munkaKozossegiKivetel? "munkaközösségi értekezlet" : foglalkozas[3],
               tulora: foglalkozas[2],
             })
           : (objToReturn[foglalkozas[1]] = [
               {
                 date: datum_str,
                 hours: foglalkozas[0],
-                string: foglalkozas[3],
+                string: munkaKozossegiKivetel? "munkaközösségi értekezlet" : foglalkozas[3],
                 tulora: foglalkozas[2],
               },
             ]);
@@ -2810,7 +2818,7 @@ class DinamikusMunyiSor {
     kivetelOk,
     kivetelTipus,
     tulora,
-    utazasiKoltseg
+    utazasiKoltseg = '',
   ) {
 
  
