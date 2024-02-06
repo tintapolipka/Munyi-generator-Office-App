@@ -1377,21 +1377,6 @@ class OrarendSablon {
     return selectElement;
   }
 
-  elsoMunkanapok2023 = [
-    "2023.01.02.",
-    "2023.02.01.",
-    "2023.03.01.",
-    "2023.04.03.",
-    "2023.05.02.",
-    "2023.06.01.",
-    "2023.07.03.",
-    "2023.08.01.",
-    "2023.09.01.",
-    "2023.10.02.",
-    "2023.11.02.",
-    "2023.12.01.",
-  ];
-
   dateSelectGenerator() {
     const selectElement = document.createElement("select");
     const allDatesArr = Object.keys(
@@ -1516,7 +1501,7 @@ class OrarendSablon {
     footer.classList.add("orarend-lablec");
     footer.classList.add("oldal-tores");
     footer.innerHTML = `<div class="orarend-keltezes">Makó, ${
-      this.elsoMunkanapok2023[this.dateObj.getMonth()]
+      elsoMunkanapok2023[this.dateObj.getMonth() + 12*(this.dateObj.getFullYear()-2023)]
     }</div>
     <div class="alairasok">
         <div id="orarend-alairas-igazgato" class="orarend-alairas">igazgató</div>
@@ -3095,21 +3080,24 @@ class MuNyiTemplate {
   }
 
   get koviHonapElsoMunkanap() {
-    const elsoMunkanapok2023 = {
-      january: "2023.02.01.",
-      february: "2023.03.01.",
-      march: "2023.04.03.",
-      april: "2023.05.02.",
-      may: "2023.06.01.",
-      june: "2023.07.03.",
-      july: "2023.08.01.",
-      august: "2023.09.01.",
-      september: "2023.10.02.",
-      october: "2023.11.02.",
-      november: "2023.12.01.",
-      december: "2024.01.03.",
-    };
+   
+    // const elsoMunkanapok2023 = {
+    //   january: "2023.02.01.",
+    //   february: "2023.03.01.",
+    //   march: "2023.04.03.",
+    //   april: "2023.05.02.",
+    //   may: "2023.06.01.",
+    //   june: "2023.07.03.",
+    //   july: "2023.08.01.",
+    //   august: "2023.09.01.",
+    //   september: "2023.10.02.",
+    //   october: "2023.11.02.",
+    //   november: "2023.12.01.",
+    //   december: "2024.01.03.",
+    // };
     const thisDateObj = new Date(this.date);
+
+    return new Date(elsoMunkanapok2023[thisDateObj.getMonth() + 12*(thisDateObj.getFullYear()-2023) +1])
 
     return new Date(
       elsoMunkanapok2023[
@@ -4437,5 +4425,6 @@ class TulmunkaDinamikusSor {
 }
 
 //////////////////TESZTELÉS:
+
 let m = new Menu();
 m.append();
