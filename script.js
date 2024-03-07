@@ -1717,14 +1717,7 @@ class BasicDataForm {
 
     this.node.id = "basic-date-form";
 
-    this.node.innerHTML += this.name ? `<p>Név: ${this.name}</p>` : "";
-    this.node.innerHTML += this.munkakor
-      ? `<p>Munkakör: ${this.munkakor}</p>`
-      : "";
-    this.node.innerHTML += this.date
-      ? `<p>Dokumentumok kezdő dátuma: ${this.date}</p>`
-      : "";
-
+    
     if (!this.allDataAvailable) {
       const labelForName = document.createElement("label");
       labelForName.innerText = "Dolgozó neve: ";
@@ -1747,6 +1740,15 @@ class BasicDataForm {
     }
 
     if (this.allDataAvailable) {
+      this.node.innerHTML += this.name ? `<p>Név: ${this.name}</p>` : "";
+      this.node.innerHTML += this.munkakor
+        ? `<p>Munkakör: ${this.munkakor}</p>`
+        : "";
+      this.node.innerHTML += this.date
+        ? `<p>Dokumentumok kezdő dátuma: ${this.date}</p>`
+        : "";
+  
+    
       this.node.append(this.changeDataBtn);
     }
 
