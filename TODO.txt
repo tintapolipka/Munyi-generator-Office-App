@@ -20,7 +20,10 @@ Ha kiküldetés lenne, de pótoljuk az órát, akkor ne legyen "K"???
                   adott napra
                 * munyiTemplate > soringfunctions > kikuldetesTester megírva, ami az elmaradt kiküldetések
                   óráit számolja össze adott napra  
-KÉSZ                
+KÉSZ            * ha megszűnt a kiküldetés, akkor a feladatvégzési helyek közötti utazás helyett 
+                  intézményi dokumentumok készítése legyen
+                  szabadOraObj["8."] = szabadOraObj["8."]? +szabadOraObj["8."] + +szabadOraObj["14."] : szabadOraObj["14."];
+                  szabadOraObj["14."] = '';    
 
 Ha túlóra elmarad, az nem jelenik meg a BELSŐ teljesítési igazolásban! KÉSZ
 
