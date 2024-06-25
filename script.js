@@ -590,6 +590,7 @@ class OrarendFoglalkozas {
     <option value="pályaválasztási tanácsadás">pályaválasztási tanácsadás</option>
     <option value="fejlesztő nevelés">fejlesztő nevelés</option>
     <option value="megfigyelés változó helyszínen">megfigyelés változó helyszínen</option>
+    <option value="intézményi feladatellátás">intézményi feladatellátás</option>
     `;
 
     return selectElement;
