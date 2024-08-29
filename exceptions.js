@@ -5,7 +5,7 @@ const exceptions = [
   ["2023-11-01", "ünnepnap", "tavollét"],
   ["2023-11-02", "szabadság", "tavollét"],
   ["2023-11-03", "szabadság", "tavollét"],
-  ["2023-11-13","munkaközösségi értekezlet","tavollét",false],
+  ["2023-11-13", "munkaközösségi értekezlet", "tavollét", false],
 
   ["2023-12-25", "ünnepnap", "tavollét"],
   ["2023-12-26", "ünnepnap", "tavollét"],
@@ -18,7 +18,7 @@ const exceptions = [
   ["2024-01-04", "szabadság", "tavollét"],
   ["2024-01-05", "szabadság", "tavollét"],
 
-  ["2024-03-14","munkaközösségi értekezlet","tavollét",false],
+  ["2024-03-14", "munkaközösségi értekezlet", "tavollét", false],
   ["2024-03-15", "ünnepnap", "tavollét"],
   ["2024-03-28", "szabadság", "tavollét"],
   ["2024-03-29", "ünnepnap", "tavollét"],
@@ -28,9 +28,9 @@ const exceptions = [
   ["2024-04-03", "szabadság", "tavollét"],
   ["2024-04-04", "szabadság", "tavollét"],
   ["2024-04-05", "szabadság", "tavollét"],
-  
+
   ["2024-05-01", "ünnepnap", "tavollét"],
-  ["2024-05-21","munkaközösségi értekezlet","tavollét",false],
+  ["2024-05-21", "munkaközösségi értekezlet", "tavollét", false],
   ["2024-05-20", "ünnepnap", "tavollét"],
 
   ["2024-07-10", "szabadság", "tavollét"],
@@ -49,5 +49,24 @@ const exceptions = [
   ["2024-07-29", "szabadság", "tavollét"],
   ["2024-07-30", "szabadság", "tavollét"],
   ["2024-07-31", "szabadság", "tavollét"],
+  
+  ["2024.08.01.", "szabadság", "tavollét"],
+  ["2024.08.02.", "szabadság", "tavollét"],
+  ["2024.08.03.", "szabadság", "tavollét"],
+  ["2024.08.05.", "szabadság", "tavollét"],
+  ["2024.08.06.", "szabadság", "tavollét"],
+  ["2024.08.07.", "szabadság", "tavollét"],
+  ["2024.08.08.", "szabadság", "tavollét"],
+  ["2024.08.09.", "szabadság", "tavollét"],
+  ["2024.08.12.", "szabadság", "tavollét"],
+  ["2024.08.13.", "szabadság", "tavollét"],
+  ["2024.08.14.", "szabadság", "tavollét"],
+  ["2024.08.15.", "szabadság", "tavollét"],
+  ["2024.08.16.", "szabadság", "tavollét"],
+  ["2024.08.19.", "szabadság", "tavollét"],
+  ["2024.08.20.", "ünnepnap", "tavollét"],
+  ["2024.08.21.", "szabadság", "tavollét"],
+  ["2024.08.22.", "szabadság", "tavollét"],
+  ["2024.08.23.", "szabadság", "tavollét"],
+  
 ];
-
