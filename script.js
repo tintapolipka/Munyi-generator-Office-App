@@ -1509,7 +1509,7 @@ class OrarendSablon {
 
     const fejlec = document.createElement("header");
     fejlec.classList.add("orarend-header");
-    fejlec.innerHTML = `    <h1 id="orarend-header-h1" class="orarend-header-h1">Csongrád Vármegyei Pedagógiai Szakszolgálat Makói Tagintézménye <br/> 6900 Makó, Vásárhelyi u. 1-3.</h1>
+    fejlec.innerHTML = `    <h1 id="orarend-header-h1" class="orarend-header-h1">Csongrád-Csanád Vármegyei Pedagógiai Szakszolgálat Makói Tagintézménye <br/> 6900 Makó, Vásárhelyi u. 1-3.</h1>
     <div class="orarend-tanev">${this.tanev}
       <div class="orarend-honapnev">${this.dateObj
         .toLocaleString("hu-HU", { month: "long" })
